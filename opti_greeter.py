@@ -106,7 +106,6 @@ if __name__ == '__main__':
     greeter = LightDM.Greeter()
 
     # connect signal handlers to LightDM
-    logging.message("Connecting handlers")
 
     greeter.connect ("authentication-complete", authentication_complete_cb)
     greeter.connect ("show-message", show_message_cb)
@@ -115,9 +114,7 @@ if __name__ == '__main__':
     # connect builder and widgets
     # you probably really want to put your .UI file somewhere else
 
-    logging.message("Loading UI")
     builder.add_from_file("/etc/lightdm/opti_greeter.ui")
-    logging.message("Building objects")
 
     login_window = builder.get_object("login_window")
     login_box = builder.get_object("login_box")
@@ -130,12 +127,7 @@ if __name__ == '__main__':
     builder.connect_signals(handlers)
 
     # connect to greeter
-    logging.message("Initializing connection")
-    try:
-	    greeter.connect_to_daemon_sync()
-    except Exception as e:
-	    logging.fatal(e, exc_info=True)  # log exception info at FATAL log level
-    logging.message("Connected.")
+    greeter.connect_to_daemon_sync()
     
     # setup the GUI
     login_window.show()
