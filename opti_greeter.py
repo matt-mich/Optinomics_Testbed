@@ -125,10 +125,10 @@ if __name__ == '__main__':
     builder.connect_signals(handlers)
 
     # connect to greeter
-	try:
-		greeter.connect_to_daemon_sync()
-	except Exception as e:
-    logging.fatal(e, exc_info=True)  # log exception info at FATAL log level
+    try:
+	    greeter.connect_to_daemon_sync()
+    except Exception as e:
+	    logging.fatal(e, exc_info=True)  # log exception info at FATAL log level
     
     # setup the GUI
     login_window.show()
