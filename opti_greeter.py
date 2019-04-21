@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
     # connect builder and widgets
     # you probably really want to put your .UI file somewhere else
-    builder.add_from_file("/home/doctor/optinomics/bin/opti_greeter.ui")
+    builder.add_from_file("/etc/lightdm/opti_greeter.ui")
 
     login_window = builder.get_object("login_window")
     login_box = builder.get_object("login_box")
