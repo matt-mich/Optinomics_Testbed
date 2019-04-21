@@ -19,6 +19,8 @@
 # gir1.2-gtk-3.0
 import gi
 import logging
+import tkinter as tk
+
 gi.require_version('Gtk', '3.0') 
 gi.require_version('LightDM', '1')
 
@@ -37,7 +39,7 @@ prompt_box = None
 prompt_label = None
 prompt_entry = None
 message_label = None
-
+logo = None
 # This Gtk signal is called when the user hits enter after entering a
 # username/password or clicks the login button.  Since we re-purposed
 # the text entry box, we have 3 possible cases to handle here.
@@ -114,31 +116,35 @@ if __name__ == '__main__':
     # connect builder and widgets
     # you probably really want to put your .UI file somewhere else
 
-    builder.add_from_file("/etc/lightdm/opti_greeter.ui")
+    #builder.add_from_file("/etc/lightdm/opti_greeter.ui")
 
-    login_window = builder.get_object("login_window")
-    login_box = builder.get_object("login_box")
-    prompt_box = builder.get_object("prompt_box")
-    prompt_label = builder.get_object("prompt_label")
-    prompt_entry = builder.get_object("prompt_entry")
-    message_label = builder.get_object("message_label")
+    #login_window = builder.get_object("login_window")
+    #login_box = builder.get_object("login_box")
+    #prompt_box = builder.get_object("prompt_box")
+    #prompt_label = builder.get_object("prompt_label")
+    #prompt_entry = builder.get_object("prompt_entry")
+    #message_label = builder.get_object("message_label")
 
     # connect signals to Gtk UI
-    builder.connect_signals(handlers)
+    #builder.connect_signals(handlers)
 
     # connect to greeter
     greeter.connect_to_daemon_sync()
     
     # setup the GUI
-    login_window.show()
-    login_box.show()
+    #login_window.show()
+    #login_box.show()
 
-    prompt_label.set_text("Username:")
-    prompt_entry.set_sensitive(True)
-    prompt_entry.set_text("")
-    prompt_entry.set_visibility(True)
-    prompt_box.show()
+    #prompt_label.set_text("Username:")
+    #prompt_entry.set_sensitive(True)
+    #prompt_entry.set_text("")
+    #prompt_entry.set_visibility(True)
+    #prompt_box.show()
 
-    prompt_entry.grab_focus()
-
-    main_loop.run()
+    #prompt_entry.grab_focus()
+    r = tk.Tk() 
+    r.title('GREETER') 
+    button = tk.Button(r, text='Login', width=50)
+    button.pack() 
+    r.mainloop() 
+    #main_loop.run()
