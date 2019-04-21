@@ -18,6 +18,7 @@
 # gir1.2-glib-2.0
 # gir1.2-gtk-3.0
 import gi
+import logging
 gi.require_version('Gtk', '3.0') 
 gi.require_version('LightDM', '1')
 
@@ -124,8 +125,11 @@ if __name__ == '__main__':
     builder.connect_signals(handlers)
 
     # connect to greeter
-    greeter.connect_to_daemon_sync()
-
+	try:
+		greeter.connect_to_daemon_sync()
+	except Exception as e:
+    logging.fatal(e, exc_info=True)  # log exception info at FATAL log level
+    
     # setup the GUI
     login_window.show()
     login_box.show()
