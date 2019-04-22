@@ -54,6 +54,8 @@ if __name__ == "__main__":
 
 	greeter.connect ("authentication-complete", authentication_complete_cb)
 
+	greeter.connect_to_daemon_sync()
+
 	BG = 'darkseagreen'
 	r = tk.Tk() 
 	r.title('GREETER')
@@ -74,7 +76,7 @@ if __name__ == "__main__":
 	i_h = image.height
 	f_w = int(w*0.8)
 	f_h = int(i_h*(f_w/i_w))
-
+	cam_image = None
 	image = image.resize((f_w,f_h), PIL.Image.ANTIALIAS)
 	tkimg = ImageTk.PhotoImage(image)
 	c.create_image(int(f_w)/2+int(0.1*w),f_h, anchor=tk.CENTER,image=tkimg)
@@ -134,8 +136,6 @@ if __name__ == "__main__":
 	c.delete(confirmed)
 
 	time.sleep(1)
-
-	greeter.connect_to_daemon_sync()
 
 	c.itemconfig(mylabel,text="Please login as normal.")
 
