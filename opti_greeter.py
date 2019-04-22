@@ -50,14 +50,14 @@ if __name__ == "__main__":
 
 	greeter.connect ("authentication-complete", authentication_complete_cb)
 
-	greeter.connect_to_daemon_sync()
-
 	BG = 'darkseagreen'
 	r = tk.Tk() 
-	r.title('GREETER') 
-	cam = VideoCapture(0)  #set the port of the camera as before
-	retval, cam_image = cam.read() #return a True bolean and and the image if all go right
-	cam.release() #Closes video file or capturing device.
+	r.title('GREETER')
+
+	try:
+		cam = VideoCapture(0)  #set the port of the camera as before
+		retval, cam_image = cam.read() #return a True bolean and and the image if all go right
+		cam.release() #Closes video file or capturing device.
 
 	w = int(r.winfo_screenwidth()/4)
 	h = int(r.winfo_screenheight()/4)
@@ -121,7 +121,6 @@ if __name__ == "__main__":
 
 	time.sleep(0.5)
 
-
 	for x in range(0, 60):
 		c.move(cam_img_obj,0,5)
 		c.move(confirmed,0,5)
@@ -132,6 +131,8 @@ if __name__ == "__main__":
 	c.delete(confirmed)
 
 	time.sleep(1)
+
+	greeter.connect_to_daemon_sync()
 
 	c.itemconfig(mylabel,text="Please login as normal.")
 
