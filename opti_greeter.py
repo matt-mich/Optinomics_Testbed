@@ -80,8 +80,6 @@ def show_prompt_func(greeter,text,type):
 	NOTE.set(text);
 	c.itemconfig(mylabel,text=NOTE.get())
 
-
-
 def authentication_complete_cb(greeter):
 	logger.info('AUTH COMPLETE!')
 	NOTE.set("Auth complete")
@@ -112,12 +110,12 @@ handlers = {
 if __name__ == "__main__":
 	builder = Gtk.Builder()
 	greeter = LightDM.Greeter()
+
+	greeter.connect("::show-message",show_message_func)
+	greeter.connect("::show-prompt",show_prompt_func)
+	greeter.connect ("::authentication-complete", authentication_complete_cb)
 	greeter.connect_to_daemon_sync()
 
-	greeter.connect("show-message",show_message_func)
-	greeter.connect("show-prompt",show_prompt_func)
-	greeter.connect ("authentication-complete", authentication_complete_cb)
-	
 	BG = "darkseagreen"
 	r = tk.Tk() 
 
