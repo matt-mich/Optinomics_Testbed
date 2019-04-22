@@ -70,11 +70,11 @@ if __name__ == "__main__":
 	r.configure(background="black")
 	c.configure(background=BG)
 
-	image = Image.open("res/Opti.png")
-	i_w = image.width
-	i_h = image.height
-	f_w = int(w*0.8)
-	f_h = int(i_h*(f_w/i_w))
+	# image = Image.open("./res/Opti.png")
+	# i_w = image.width
+	# i_h = image.height
+	# f_w = int(w*0.8)
+	# f_h = int(i_h*(f_w/i_w))
 
 	# image = image.resize((f_w,f_h), PIL.Image.ANTIALIAS)
 	# tkimg = ImageTk.PhotoImage(image)
