@@ -48,6 +48,16 @@ def submitUserPass():
 	if greeter.get_is_authenticated():
 		authentication_complete_cb(greeter)
 
+def show_message_func(greeter,text,type):
+	NOTE.set(text);
+	c.itemconfig(mylabel,text=NOTE.get())
+
+def show_prompt_func(greeter,text,type):
+	NOTE.set(text);
+	c.itemconfig(mylabel,text=NOTE.get())
+
+
+
 def authentication_complete_cb(greeter):
 	NOTE.set("Auth complete")
 	c.itemconfig(mylabel,text=NOTE.get())
@@ -77,9 +87,13 @@ if __name__ == "__main__":
 	builder = Gtk.Builder()
 	greeter = LightDM.Greeter()
 
+	greeter.connect("show-message",show_message_func)
+	greeter.connect("show-prompt",show_prompt_func)
 	greeter.connect ("authentication-complete", authentication_complete_cb)
-	greeter.connect_to_daemon_sync()
+	greeter.selected_session = greeter.sessions[0].key
 
+	greeter.connect_to_daemon_sync()
+	
 	BG = "darkseagreen"
 	r = tk.Tk() 
 
