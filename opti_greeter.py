@@ -54,10 +54,9 @@ if __name__ == "__main__":
 	r = tk.Tk() 
 	r.title('GREETER')
 
-	try:
-		cam = VideoCapture(0)  #set the port of the camera as before
-		retval, cam_image = cam.read() #return a True bolean and and the image if all go right
-		cam.release() #Closes video file or capturing device.
+	#cam = VideoCapture(0)  #set the port of the camera as before
+	#retval, cam_image = cam.read() #return a True bolean and and the image if all go right
+	#cam.release() #Closes video file or capturing device.
 
 	w = int(r.winfo_screenwidth()/4)
 	h = int(r.winfo_screenheight()/4)
