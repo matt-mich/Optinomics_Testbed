@@ -76,28 +76,28 @@ if __name__ == "__main__":
 	f_w = int(w*0.8)
 	f_h = int(i_h*(f_w/i_w))
 
-	image = image.resize((f_w,f_h), PIL.Image.ANTIALIAS)
-	tkimg = ImageTk.PhotoImage(image)
-	c.create_image(int(f_w)/2+int(0.1*w),f_h, anchor=tk.CENTER,image=tkimg)
-	cam_image = None
+	# image = image.resize((f_w,f_h), PIL.Image.ANTIALIAS)
+	# tkimg = ImageTk.PhotoImage(image)
+	# c.create_image(int(f_w)/2+int(0.1*w),f_h, anchor=tk.CENTER,image=tkimg)
+	# cam_image = None
 
-	if cam_image is not None:
-		cam_image = cvtColor(cam_image, COLOR_BGR2RGB)
-		cam_image = Image.fromarray(cam_image)
-	else:
-		cam_image = misc.imread("res/matt.gif", mode='RGBA')
-		cam_image = Image.fromarray(cam_image)
+	# if cam_image is not None:
+	# 	cam_image = cvtColor(cam_image, COLOR_BGR2RGB)
+	# 	cam_image = Image.fromarray(cam_image)
+	# else:
+	# 	cam_image = misc.imread("res/matt.gif", mode='RGBA')
+	# 	cam_image = Image.fromarray(cam_image)
 
-	cam_image = cam_image.resize((int(w*0.2),(int(w*0.2))), PIL.Image.ANTIALIAS)
-	tk_cam_img = get_masked_img(cam_image,0)
-	cam_img_obj = c.create_image(int(w/2),f_h+int(h*0.4), anchor=tk.CENTER,image=tk_cam_img)
+	# cam_image = cam_image.resize((int(w*0.2),(int(w*0.2))), PIL.Image.ANTIALIAS)
+	# tk_cam_img = get_masked_img(cam_image,0)
+	# cam_img_obj = c.create_image(int(w/2),f_h+int(h*0.4), anchor=tk.CENTER,image=tk_cam_img)
 
-	status_var = "Accessing camera feed..."
+	# status_var = "Accessing camera feed..."
 
-	mylabel = c.create_text((int(w/2),(0.9*h)),fill='white',font='sans-serif, 20', text=status_var,justify=tk.LEFT)
-	#button = tk.Button(r, text='Login', width=int(w/10))
-	c.pack()
-	r.update_idletasks()
+	# mylabel = c.create_text((int(w/2),(0.9*h)),fill='white',font='sans-serif, 20', text=status_var,justify=tk.LEFT)
+	# #button = tk.Button(r, text='Login', width=int(w/10))
+	# c.pack()
+	# r.update_idletasks()
 
 	# time.sleep(2)
 
