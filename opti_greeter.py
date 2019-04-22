@@ -25,7 +25,7 @@ MASK = None
 
 USER = None
 PASS = None
-DEV = True
+DEV = False
 
 logger = logging.getLogger('OptiGreeter:')
 logger.setLevel(logging.DEBUG)
@@ -131,9 +131,15 @@ if __name__ == "__main__":
 	#cam = VideoCapture(0)  #set the port of the camera as before
 	#retval, cam_image = cam.read() #return a True bolean and and the image if all go right
 	#cam.release() #Closes video file or capturing device.
+	div_factor = None
 
-	w = int(r.winfo_screenwidth())
-	h = int(r.winfo_screenheight())
+	if DEV:
+		div_factor = 5
+	else:
+		div_factor = 1
+
+	w = int(r.winfo_screenwidth()/div_factor)
+	h = int(r.winfo_screenheight()/div_factor)
 	r.configure(background="black")
 
 	c = tk.Canvas(r, width=w, height=h)
@@ -143,7 +149,8 @@ if __name__ == "__main__":
 		image = Image.open("res/Opti.png")
 	else:
 		image = Image.open("/usr/local/bin/optinomics/res/Opti.png")
-	
+
+
 	i_w = image.width
 	i_h = image.height
 	f_w = int(w*0.8)
