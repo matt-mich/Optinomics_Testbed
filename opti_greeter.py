@@ -9,6 +9,9 @@ from gi.repository import GObject
 from gi.repository import GLib
 from gi.repository import Gtk
 
+gi.require_version('Gtk', '3.0') 
+gi.require_version('LightDM', '1')
+
 
 from gi.repository import LightDM
 import sys
