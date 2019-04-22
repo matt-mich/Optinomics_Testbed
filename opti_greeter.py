@@ -34,7 +34,7 @@ def submitUserPass():
 
 def authentication_complete_cb(greeter):
 	if greeter.get_is_authenticated():
-		if not greeter.start_session_sync("xfce4"):
+		if not greeter.start_session_sync("xfce"):
 			print >> sys.stderr, "Failed to start XFCE"	
 	else:
 		print >> sys.stderr, "Login failed"
@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
 	time.sleep(0.5)
 
-	for x in range(0, 60):
+	for x in range(0, 90):
 		c.move(cam_img_obj,0,5)
 		c.move(confirmed,0,5)
 		r.update_idletasks()
