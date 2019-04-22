@@ -36,13 +36,12 @@ def login_cb():
 	elif greeter.get_in_authentication():
 		print("username was passed in already, send password to LightDM",file=sys.stderr)
 		NOTE.set("Sending password")
-		c.itemconfig(mylabel,text=NOTE.get())
+		c.itemconfig(mylabel,text=PASS.get())
 		greeter.respond(PASS.get())
 	else:
 		#print("Initial entry of username, send it to LightDM",file=sys.stderr)
 		NOTE.set("Username accepted")
 		c.itemconfig(mylabel,text=NOTE.get())
-
 		greeter.authenticate(USER.get())
 
 def submitUserPass():
@@ -54,11 +53,12 @@ def submitUserPass():
 		authentication_complete_cb(greeter)
 
 def authentication_complete_cb(greeter):
+	NOTE.set("Auth complete")
+	c.itemconfig(mylabel,text=NOTE.get())
 	if greeter.get_is_authenticated():
 		if not greeter.start_session_sync("xfce"):
 			NOTE.set("Failed to start XFCE")
 			c.itemconfig(mylabel,text=NOTE.get())
-
 	else:
 		NOTE.set("Login failed.")
 		c.itemconfig(mylabel,text=NOTE.get())
