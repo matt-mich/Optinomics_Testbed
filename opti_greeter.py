@@ -7,7 +7,7 @@ import PIL
 from PIL import Image, ImageDraw, ImageTk, ImageOps
 from cv2 import *
 import gi
-
+import logging
 gi.require_version('Gtk', '3.0') 
 gi.require_version('LightDM', '1')
 
@@ -49,6 +49,9 @@ def submitUserPass():
 		authentication_complete_cb(greeter)
 
 def show_message_func(greeter,text,type):
+	logging.debug("SHOWING MSG")
+	logging.debug(text)
+
 	NOTE.set(text);
 	c.itemconfig(mylabel,text=NOTE.get())
 
@@ -83,7 +86,7 @@ handlers = {
 
 
 if __name__ == "__main__":
-
+	logging.debug("TEST DEBUG MSG")
 	builder = Gtk.Builder()
 	greeter = LightDM.Greeter()
 
