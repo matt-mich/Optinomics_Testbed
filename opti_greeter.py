@@ -25,7 +25,7 @@ MASK = None
 
 USER = None
 PASS = None
-DEV = True
+DEV = False
 
 logger = logging.getLogger('OptiGreeter:')
 logger.setLevel(logging.DEBUG)
