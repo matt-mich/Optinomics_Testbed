@@ -26,6 +26,7 @@ MASK = None
 USER = None
 PASS = None
 
+logging.basicConfig(level=logging.INFO)
 
 def login_cb():
 	if greeter.get_is_authenticated():
