@@ -1,5 +1,5 @@
 import time
-from scipy import imageio
+from scipy import misc
 import tkinter as tk
 import PIL
 from PIL import Image, ImageDraw, ImageTk, ImageOps
@@ -86,7 +86,7 @@ if __name__ == "__main__":
 		cam_image = cvtColor(cam_image, COLOR_BGR2RGB)
 		cam_image = Image.fromarray(cam_image)
 	else:
-		cam_image = imageio.imread("res/matt.gif", mode='RGBA')
+		cam_image = misc.imread("res/matt.gif", mode='RGBA')
 		cam_image = Image.fromarray(cam_image)
 
 	cam_image = cam_image.resize((int(w*0.2),(int(w*0.2))), PIL.Image.ANTIALIAS)
