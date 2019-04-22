@@ -223,3 +223,6 @@ if __name__ == "__main__":
 	c.create_window(int(w/2),int(h/2)+30,window=password_label)
 	c.create_window(int(w/2),int(h/2)+60,window=password_input)
 	c.create_window(int(w/2),int(h/2)+100,window=login_button)
+
+	while(True):
+		r.update();
