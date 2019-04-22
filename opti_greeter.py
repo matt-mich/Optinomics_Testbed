@@ -44,15 +44,19 @@ logger.addHandler(ch)
 
 def login_cb():
 	if greeter.get_is_authenticated():
+		logger.info('AUTHENTICATED!')
+
 		NOTE.set("Attempting to start session")
 		authentication_complete_cb(greeter)
 	elif greeter.get_in_authentication():
 		#NOTE.set("Sending password")
 		#c.itemconfig(mylabel,text=NOTE.get())
+		logger.info('SENDING PASSWORD')
 		greeter.respond(PASS.get())
 	else:
 		#NOTE.set("Username accepted")
 		#c.itemconfig(mylabel,text=NOTE.get())
+		logger.info('SENDING USERNAME')
 		greeter.authenticate(USER.get())
 
 def submitUserPass():
@@ -64,19 +68,22 @@ def submitUserPass():
 		authentication_complete_cb(greeter)
 
 def show_message_func(greeter,text,type):
-	logging.debug("SHOWING MSG")
-	logging.debug(text)
-
+	logger.info('SHOWING MESSAGE')
+	logger.info(text)
 	NOTE.set(text);
 	c.itemconfig(mylabel,text=NOTE.get())
 
 def show_prompt_func(greeter,text,type):
+	logger.info('SHOWING PROMPT')
+	logger.info(text)
+	
 	NOTE.set(text);
 	c.itemconfig(mylabel,text=NOTE.get())
 
 
 
 def authentication_complete_cb(greeter):
+	logger.info('AUTH COMPLETE!')
 	NOTE.set("Auth complete")
 	c.itemconfig(mylabel,text=NOTE.get())
 	if greeter.get_is_authenticated():
@@ -103,8 +110,6 @@ handlers = {
 
 
 if __name__ == "__main__":
-	logger.info('INFO TEST')
-	logger.debug('DEBUG TEST')
 	builder = Gtk.Builder()
 	greeter = LightDM.Greeter()
 	greeter.connect_to_daemon_sync()
