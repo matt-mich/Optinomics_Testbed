@@ -25,7 +25,7 @@ MASK = None
 
 USER = None
 PASS = None
-DEV = False
+DEV = True
 
 logger = logging.getLogger('OptiGreeter:')
 logger.setLevel(logging.DEBUG)
@@ -121,9 +121,9 @@ if __name__ == "__main__":
 	if not DEV:
 		greeter.connect_to_daemon_sync()
 
-	win = Gtk.Window()
-	win.connect("destroy", Gtk.main_quit)
-	win.show_all()
+#	win = Gtk.Window()
+#	win.connect("destroy", Gtk.main_quit)
+#	win.show_all()
 	Gtk.main_iteration_do(False)
 	BG = "darkseagreen"
 	r = tk.Tk() 
@@ -240,5 +240,5 @@ if __name__ == "__main__":
 
 
 	while(True):
-		tk.update()
+		r.update()
 		Gtk.main_iteration_do(False)
