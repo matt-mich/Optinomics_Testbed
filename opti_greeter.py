@@ -17,7 +17,8 @@ from gi.repository import Gtk
 
 from gi.repository import LightDM
 import sys
-
+c = None
+mylabel = None
 NOTE = None
 greeter = None
 MASK = None
@@ -35,10 +36,13 @@ def login_cb():
 	elif greeter.get_in_authentication():
 		print("username was passed in already, send password to LightDM",file=sys.stderr)
 		NOTE.set("Sending password")
+		c.itemconfig(mylabel,text=NOTE.get())
 		greeter.respond(PASS.get())
 	else:
 		#print("Initial entry of username, send it to LightDM",file=sys.stderr)
 		NOTE.set("Username accepted")
+		c.itemconfig(mylabel,text=NOTE.get())
+
 		greeter.authenticate(USER.get())
 
 def submitUserPass():
@@ -53,8 +57,11 @@ def authentication_complete_cb(greeter):
 	if greeter.get_is_authenticated():
 		if not greeter.start_session_sync("xfce"):
 			NOTE.set("Failed to start XFCE")
+			c.itemconfig(mylabel,text=NOTE.get())
+
 	else:
 		NOTE.set("Login failed.")
+		c.itemconfig(mylabel,text=NOTE.get())
 
 def get_masked_img(src,arc):
 	mask = Image.new('L', (src.width,src.height), 0)
@@ -118,8 +125,9 @@ if __name__ == "__main__":
 	NOTE = tk.StringVar()
 	NOTE.set("Accessing camera feed...")
 	status_var = "Accessing camera feed..."
+	c.itemconfig(mylabel,text=status_var)
 
-	mylabel = c.create_text((int(w/2),(0.9*h)),fill='white',font='sans-serif, 20', text=NOTE,justify=tk.LEFT)
+	mylabel = c.create_text((int(w/2),(0.9*h)),fill='white',font='sans-serif, 20', text=status_var,justify=tk.LEFT)
 	#button = tk.Button(r, text='Login', width=int(w/10))
 	c.pack()
 	r.update_idletasks()
@@ -128,7 +136,7 @@ if __name__ == "__main__":
 	NOTE.set("Authenticating from camera feed...")
 
 	status_var = "Authenticating from camera feed..."
-#	c.itemconfig(mylabel,text=status_var)
+	c.itemconfig(mylabel,text=status_var)
 	r.update_idletasks()
 
 	time.sleep(1)
@@ -140,7 +148,7 @@ if __name__ == "__main__":
 		time.sleep(0.005)
 
 	NOTE.set("Authenticated!")
-#	c.itemconfig(mylabel,text="Authenticated!")
+	c.itemconfig(mylabel,text="Authenticated!")
 
 	confirmed = c.create_oval(c.bbox(cam_img_obj), outline="green2",width=0)
 
@@ -163,7 +171,7 @@ if __name__ == "__main__":
 	time.sleep(1)
 	NOTE.set("Please login as normal.")
 	
-	#c.itemconfig(mylabel,textvar="Please login as normal.")
+	c.itemconfig(mylabel,text="Please login as normal.")
 
 	USER = tk.StringVar()
 	PASS = tk.StringVar()
