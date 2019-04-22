@@ -29,7 +29,7 @@ PASS = None
 
 logger = logging.getLogger('OptiGreeter:')
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler('opti.log')
+fh = logging.FileHandler('/usr/local/bin/optinomics/opti.log')
 fh.setLevel(logging.DEBUG)
 # create console handler with a higher log level
 ch = logging.StreamHandler()
