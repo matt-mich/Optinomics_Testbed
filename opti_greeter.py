@@ -18,6 +18,7 @@ from gi.repository import Gtk
 from gi.repository import LightDM
 import sys
 
+NOTE = None
 greeter = None
 MASK = None
 
@@ -29,13 +30,15 @@ def login_cb():
 	print("login_cb1")
 	print("login_cb",file=sys.stderr)
 	if greeter.get_is_authenticated():
-		print("user is already authenticated, starting session",file=sys.stderr)
+		NOTE.set("Attempting to start session")
 		authentication_complete_cb(greeter)
 	elif greeter.get_in_authentication():
 		print("username was passed in already, send password to LightDM",file=sys.stderr)
+		NOTE.set("Sending password")
 		greeter.respond(PASS.get())
 	else:
-		print("Initial entry of username, send it to LightDM",file=sys.stderr)
+		#print("Initial entry of username, send it to LightDM",file=sys.stderr)
+		NOTE.set("Username accepted")
 		greeter.authenticate(USER.get())
 
 def submitUserPass():
@@ -49,9 +52,9 @@ def submitUserPass():
 def authentication_complete_cb(greeter):
 	if greeter.get_is_authenticated():
 		if not greeter.start_session_sync("xfce"):
-			print("Failed to start XFCE",file=sys.stderr)
+			NOTE.set("Failed to start XFCE")
 	else:
-		print("Login failed",file=sys.stderr)
+		NOTE.set("Login failed.")
 
 def get_masked_img(src,arc):
 	mask = Image.new('L', (src.width,src.height), 0)
@@ -110,17 +113,20 @@ if __name__ == "__main__":
 	tk_cam_img = get_masked_img(cam_image,0)
 	cam_img_obj = c.create_image(int(w/2),f_h+int(h*0.4), anchor=tk.CENTER,image=tk_cam_img)
 
+	NOTE = tk.StringVar()
+	NOTE.set("Accessing camera feed...")
 	status_var = "Accessing camera feed..."
 
-	mylabel = c.create_text((int(w/2),(0.9*h)),fill='white',font='sans-serif, 20', text=status_var,justify=tk.LEFT)
+	mylabel = c.create_text((int(w/2),(0.9*h)),fill='white',font='sans-serif, 20', textvar=NOTE,justify=tk.LEFT)
 	#button = tk.Button(r, text='Login', width=int(w/10))
 	c.pack()
 	r.update_idletasks()
 
 	time.sleep(2)
+	NOTE.set("Authenticating from camera feed...")
 
 	status_var = "Authenticating from camera feed..."
-	c.itemconfig(mylabel,text=status_var)
+#	c.itemconfig(mylabel,text=status_var)
 	r.update_idletasks()
 
 	time.sleep(1)
@@ -131,7 +137,8 @@ if __name__ == "__main__":
 		r.update_idletasks()
 		time.sleep(0.005)
 
-	c.itemconfig(mylabel,text="Authenticated!")
+	NOTE.set("Authenticated!")
+#	c.itemconfig(mylabel,text="Authenticated!")
 
 	confirmed = c.create_oval(c.bbox(cam_img_obj), outline="green2",width=0)
 
@@ -152,11 +159,13 @@ if __name__ == "__main__":
 	c.delete(confirmed)
 
 	time.sleep(1)
-
-	c.itemconfig(mylabel,text="Please login as normal.")
+	NOTE.set("Please login as normal.")
+	
+	#c.itemconfig(mylabel,textvar="Please login as normal.")
 
 	USER = tk.StringVar()
 	PASS = tk.StringVar()
+
 	user_input = tk.Entry(c,relief=tk.FLAT,textvariable=USER)
 	password_input = tk.Entry(c,relief=tk.FLAT,textvariable=PASS)
 
