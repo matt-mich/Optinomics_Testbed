@@ -26,7 +26,21 @@ MASK = None
 USER = None
 PASS = None
 
-logging.basicConfig(level=logging.INFO)
+
+logger = logging.getLogger('OptiGreeter:')
+logger.setLevel(logging.DEBUG)
+fh = logging.FileHandler('opti.log')
+fh.setLevel(logging.DEBUG)
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.ERROR)
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+# add the handlers to the logger
+logger.addHandler(fh)
+logger.addHandler(ch)
 
 def login_cb():
 	if greeter.get_is_authenticated():
@@ -82,12 +96,15 @@ def get_masked_img(src,arc):
 	return ImageTk.PhotoImage(src)
 
 handlers = {
-    "login_cb": login_cb
+    "login_cb": login_cb,
+	"show-message":show_message_func,
+	"show-prompt":show_prompt_func
 }
 
 
 if __name__ == "__main__":
-	logging.debug("TEST DEBUG MSG")
+	logger.info('INFO TEST')
+	logger.debug('DEBUG TEST')
 	builder = Gtk.Builder()
 	greeter = LightDM.Greeter()
 	greeter.connect_to_daemon_sync()
