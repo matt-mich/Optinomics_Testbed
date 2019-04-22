@@ -225,5 +225,5 @@ if __name__ == "__main__":
 	c.create_window(int(w/2),int(h/2)+100,window=login_button)
 
 	while(True):
-		Gtk.main_itteration()
+		Gtk.main_itteration_do()
 		r.update()
