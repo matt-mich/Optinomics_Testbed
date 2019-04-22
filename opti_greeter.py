@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
 	c = tk.Canvas(r, width=w, height=h)
 	c.configure(background=BG)
-
+#	image = Image.open("res/Opti.png")
 	image = Image.open("/usr/local/bin/optinomics/res/Opti.png")
 	i_w = image.width
 	i_h = image.height
@@ -107,6 +107,8 @@ if __name__ == "__main__":
 		cam_image = Image.fromarray(cam_image)
 	else:
 		cam_image = misc.imread("/usr/local/bin/optinomics/res/matt.gif", mode='RGBA')
+#		cam_image = misc.imread("res/matt.gif", mode='RGBA')
+
 		cam_image = Image.fromarray(cam_image)
 
 	cam_image = cam_image.resize((int(w*0.2),(int(w*0.2))), PIL.Image.ANTIALIAS)
@@ -117,7 +119,7 @@ if __name__ == "__main__":
 	NOTE.set("Accessing camera feed...")
 	status_var = "Accessing camera feed..."
 
-	mylabel = c.create_text((int(w/2),(0.9*h)),fill='white',font='sans-serif, 20', textvar=NOTE,justify=tk.LEFT)
+	mylabel = c.create_text((int(w/2),(0.9*h)),fill='white',font='sans-serif, 20', text=NOTE,justify=tk.LEFT)
 	#button = tk.Button(r, text='Login', width=int(w/10))
 	c.pack()
 	r.update_idletasks()
