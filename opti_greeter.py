@@ -54,10 +54,11 @@ if __name__ == "__main__":
 
 	greeter.connect ("authentication-complete", authentication_complete_cb)
 
-	greeter.connect_to_daemon_sync()
 
 	BG = 'darkseagreen'
 	r = tk.Tk() 
+	greeter.connect_to_daemon_sync()
+
 	r.title('GREETER')
 
 	#cam = VideoCapture(0)  #set the port of the camera as before
