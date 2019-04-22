@@ -28,18 +28,14 @@ PASS = None
 
 
 def login_cb():
-	print("login_cb1")
-	print("login_cb",file=sys.stderr)
 	if greeter.get_is_authenticated():
 		NOTE.set("Attempting to start session")
 		authentication_complete_cb(greeter)
 	elif greeter.get_in_authentication():
-		print("username was passed in already, send password to LightDM",file=sys.stderr)
 		NOTE.set("Sending password")
-		c.itemconfig(mylabel,text=PASS.get())
+		c.itemconfig(mylabel,text=NOTE.get())
 		greeter.respond(PASS.get())
 	else:
-		#print("Initial entry of username, send it to LightDM",file=sys.stderr)
 		NOTE.set("Username accepted")
 		c.itemconfig(mylabel,text=NOTE.get())
 		greeter.authenticate(USER.get())
