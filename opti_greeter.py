@@ -240,5 +240,5 @@ if __name__ == "__main__":
 
 
 	while(True):
-		tk.update_idletasks()
+		tk.update()
 		Gtk.main_iteration_do(False)
