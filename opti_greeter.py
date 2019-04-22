@@ -54,7 +54,7 @@ if __name__ == "__main__":
 	greeter = LightDM.Greeter()
 
 	greeter.connect ("authentication-complete", authentication_complete_cb)
-#	greeter.connect_to_daemon_sync()
+	greeter.connect_to_daemon_sync()
 
 	BG = 'darkseagreen'
 	r = tk.Tk() 
