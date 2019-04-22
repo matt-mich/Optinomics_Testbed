@@ -56,7 +56,7 @@ if __name__ == "__main__":
 	greeter.connect ("authentication-complete", authentication_complete_cb)
 	greeter.connect_to_daemon_sync()
 
-	BG = 'darkseagreen'
+	BG = "darkseagreen"
 	r = tk.Tk() 
 
 	#cam = VideoCapture(0)  #set the port of the camera as before
@@ -65,12 +65,12 @@ if __name__ == "__main__":
 
 	w = int(r.winfo_screenwidth())
 	h = int(r.winfo_screenheight())
+	r.configure(background="black")
 
 	c = tk.Canvas(r, width=w, height=h)
-	r.configure(background="black")
 	c.configure(background=BG)
 
-	image = Image.open("./res/Opti.png")
+	image = Image.open("/usr/local/bin/optinomics/res/Opti.png")
 	i_w = image.width
 	i_h = image.height
 	f_w = int(w*0.8)
