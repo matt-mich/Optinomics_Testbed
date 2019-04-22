@@ -90,12 +90,11 @@ if __name__ == "__main__":
 	logging.debug("TEST DEBUG MSG")
 	builder = Gtk.Builder()
 	greeter = LightDM.Greeter()
+	greeter.connect_to_daemon_sync()
 
 	greeter.connect("show-message",show_message_func)
 	greeter.connect("show-prompt",show_prompt_func)
 	greeter.connect ("authentication-complete", authentication_complete_cb)
-
-	greeter.connect_to_daemon_sync()
 	
 	BG = "darkseagreen"
 	r = tk.Tk() 
