@@ -26,17 +26,17 @@ PASS = None
 
 
 def login_cb():
-    print >> sys.stderr, "login_cb"
-    if greeter.get_is_authenticated():
-        print >> sys.stderr, "user is already authenticated, starting session"
-        authentication_complete_cb(greeter)
-		
-    elif greeter.get_in_authentication():
-        print >> sys.stderr, "username was passed in already, send password to LightDM"
-        greeter.respond(PASS.get())
-    else:
-        print >> sys.stderr, "Initial entry of username, send it to LightDM"
-        greeter.authenticate(USER.get())
+	print("login_cb1")
+	print("login_cb",file=sys.stderr)
+	if greeter.get_is_authenticated():
+		print("user is already authenticated, starting session",file=sys.stderr)
+		authentication_complete_cb(greeter)
+	elif greeter.get_in_authentication():
+		print("username was passed in already, send password to LightDM",file=sys.stderr)
+		greeter.respond(PASS.get())
+	else:
+		print("Initial entry of username, send it to LightDM",file=sys.stderr)
+		greeter.authenticate(USER.get())
 
 def submitUserPass():
 	username = USER.get()
@@ -49,9 +49,9 @@ def submitUserPass():
 def authentication_complete_cb(greeter):
 	if greeter.get_is_authenticated():
 		if not greeter.start_session_sync("xfce"):
-			print >> sys.stderr, "Failed to start XFCE"	
+			print("Failed to start XFCE",file=sys.stderr)
 	else:
-		print >> sys.stderr, "Login failed"
+		print("Login failed",file=sys.stderr)
 
 def get_masked_img(src,arc):
 	mask = Image.new('L', (src.width,src.height), 0)
