@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import time
 from scipy import misc
 import tkinter as tk
