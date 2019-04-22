@@ -24,6 +24,20 @@ MASK = None
 USER = None
 PASS = None
 
+
+def login_cb():
+    print >> sys.stderr, "login_cb"
+    if greeter.get_is_authenticated():
+        print >> sys.stderr, "user is already authenticated, starting session"
+        authentication_complete_cb(greeter)
+		
+    elif greeter.get_in_authentication():
+        print >> sys.stderr, "username was passed in already, send password to LightDM"
+        greeter.respond(PASS.get())
+    else:
+        print >> sys.stderr, "Initial entry of username, send it to LightDM"
+        greeter.authenticate(USER.get())
+
 def submitUserPass():
 	username = USER.get()
 	password = PASS.get()
@@ -46,6 +60,10 @@ def get_masked_img(src,arc):
 	src = ImageOps.fit(src, mask.size, centering=(0.5, 0.5))
 	src.putalpha(mask)
 	return ImageTk.PhotoImage(src)
+
+handlers = {
+    "login_cb": login_cb
+}
 
 
 if __name__ == "__main__":
@@ -142,7 +160,7 @@ if __name__ == "__main__":
 	user_input = tk.Entry(c,relief=tk.FLAT,textvariable=USER)
 	password_input = tk.Entry(c,relief=tk.FLAT,textvariable=PASS)
 
-	login_button = tk.Button(c,text="Login",relief=tk.FLAT,font='sans-serif, 15',fg='white',bg='green',command=submitUserPass)
+	login_button = tk.Button(c,text="Login",relief=tk.FLAT,font='sans-serif, 15',fg='white',bg='green',command=login_cb)
 
 	user_label = tk.Label(c,text="User:",font='sans-serif, 15',fg='white',bg=BG,justify='left')
 
