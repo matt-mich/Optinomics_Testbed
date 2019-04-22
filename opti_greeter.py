@@ -32,12 +32,12 @@ def login_cb():
 		NOTE.set("Attempting to start session")
 		authentication_complete_cb(greeter)
 	elif greeter.get_in_authentication():
-		NOTE.set("Sending password")
-		c.itemconfig(mylabel,text=NOTE.get())
+		#NOTE.set("Sending password")
+		#c.itemconfig(mylabel,text=NOTE.get())
 		greeter.respond(PASS.get())
 	else:
-		NOTE.set("Username accepted")
-		c.itemconfig(mylabel,text=NOTE.get())
+		#NOTE.set("Username accepted")
+		#c.itemconfig(mylabel,text=NOTE.get())
 		greeter.authenticate(USER.get())
 
 def submitUserPass():
