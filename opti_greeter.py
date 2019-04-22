@@ -113,7 +113,6 @@ if __name__ == "__main__":
 
 	greeter.connect("show-message",show_message_func)
 	greeter.connect("show-prompt",show_prompt_func)
-	greeter.connect("show-promp",show_prompt_func)
 
 	greeter.connect ("authentication-complete", authentication_complete_cb)
 	greeter.connect_to_daemon_sync()
@@ -224,5 +223,3 @@ if __name__ == "__main__":
 	c.create_window(int(w/2),int(h/2)+30,window=password_label)
 	c.create_window(int(w/2),int(h/2)+60,window=password_input)
 	c.create_window(int(w/2),int(h/2)+100,window=login_button)
-
-	r.mainloop()
