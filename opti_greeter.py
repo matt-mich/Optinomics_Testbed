@@ -117,6 +117,10 @@ if __name__ == "__main__":
 	greeter.connect ("authentication-complete", authentication_complete_cb)
 	greeter.connect_to_daemon_sync()
 
+	win = Gtk.Window()
+	win.connect("destroy", Gtk.main_quit)
+	win.show_all()
+	Gtk.main_itteration_do()
 	BG = "darkseagreen"
 	r = tk.Tk() 
 
@@ -224,6 +228,7 @@ if __name__ == "__main__":
 	c.create_window(int(w/2),int(h/2)+60,window=password_input)
 	c.create_window(int(w/2),int(h/2)+100,window=login_button)
 
+
 	while(True):
+		tk.update_idletasks()
 		Gtk.main_itteration_do()
-		r.update()
