@@ -25,11 +25,14 @@ MASK = None
 
 USER = None
 PASS = None
-
+DEV = True
 
 logger = logging.getLogger('OptiGreeter:')
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler('/usr/local/bin/optinomics/opti.log')
+if DEV:
+	fh = logging.FileHandler('opti.log')
+else:
+	fh = logging.FileHandler('/usr/local/bin/optinomics/opti.log')
 fh.setLevel(logging.DEBUG)
 # create console handler with a higher log level
 ch = logging.StreamHandler()
@@ -115,12 +118,13 @@ if __name__ == "__main__":
 	greeter.connect("show-prompt",show_prompt_func)
 
 	greeter.connect ("authentication-complete", authentication_complete_cb)
-	greeter.connect_to_daemon_sync()
+	if not DEV:
+		greeter.connect_to_daemon_sync()
 
 	win = Gtk.Window()
 	win.connect("destroy", Gtk.main_quit)
 	win.show_all()
-	Gtk.main_itteration_do()
+	Gtk.main_iteration_do(False)
 	BG = "darkseagreen"
 	r = tk.Tk() 
 
@@ -134,8 +138,12 @@ if __name__ == "__main__":
 
 	c = tk.Canvas(r, width=w, height=h)
 	c.configure(background=BG)
-#	image = Image.open("res/Opti.png")
-	image = Image.open("/usr/local/bin/optinomics/res/Opti.png")
+	
+	if DEV:
+		image = Image.open("res/Opti.png")
+	else:
+		image = Image.open("/usr/local/bin/optinomics/res/Opti.png")
+	
 	i_w = image.width
 	i_h = image.height
 	f_w = int(w*0.8)
@@ -150,9 +158,11 @@ if __name__ == "__main__":
 		cam_image = cvtColor(cam_image, COLOR_BGR2RGB)
 		cam_image = Image.fromarray(cam_image)
 	else:
-		cam_image = misc.imread("/usr/local/bin/optinomics/res/matt.gif", mode='RGBA')
-#		cam_image = misc.imread("res/matt.gif", mode='RGBA')
-
+		if DEV:
+			cam_image = misc.imread("res/matt.gif", mode='RGBA')
+		else:
+			cam_image = misc.imread("/usr/local/bin/optinomics/res/matt.gif", mode='RGBA')
+	
 		cam_image = Image.fromarray(cam_image)
 
 	cam_image = cam_image.resize((int(w*0.2),(int(w*0.2))), PIL.Image.ANTIALIAS)
@@ -231,4 +241,4 @@ if __name__ == "__main__":
 
 	while(True):
 		tk.update_idletasks()
-		Gtk.main_itteration_do()
+		Gtk.main_iteration_do(False)
