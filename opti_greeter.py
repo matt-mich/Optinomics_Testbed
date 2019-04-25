@@ -121,148 +121,153 @@ if __name__ == "__main__":
 	if not DEV:
 		greeter.connect_to_daemon_sync()
 
-	# class OptiGreeter(Gtk.Window):
+	class OptiGreeter(Gtk.Window):
 
-	#     def __init__(self):
-	#         Gtk.Window.__init__(self, title="OptiGreeter")
+		def __init__(self):
+			Gtk.Window.__init__(self, title="OptiGreeter")
+			vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+			self.add(vbox)
+			#self.u_entry = Gtk.Entry()
 
-	#         self.button = Gtk.Button(label="Click Here")
-	#         self.button.connect("clicked", self.on_button_clicked)
-	#         self.add(self.button)
 
-	#     def on_button_clicked(self, widget):
-	#         print("OH NO")
+			#self.p_entry = Gtk.Entry()
+			self.button = Gtk.Button(label="Click Here")
+			self.button.connect("clicked", self.on_button_clicked)
+			vbox.pack_start(self.button, True, True, 0)
 
-	# win = OptiGreeter()
-	# win.connect("destroy", Gtk.main_quit)
-	# win.show_all()
+			#self.add(self.u_entry)
+			#self.add(self.p_entry)
 
-#	win = Gtk.Window()
-#	win.connect("destroy", Gtk.main_quit)
-#	win.show_all()
+		def on_button_clicked(self, widget):
+			login_cb()
 
-	BG = "darkseagreen"
-	r = tk.Tk() 
+	win = OptiGreeter()
+	win.connect("destroy", Gtk.main_quit)
+	win.show_all()
 
-	#cam = VideoCapture(0)  #set the port of the camera as before
-	#retval, cam_image = cam.read() #return a True bolean and and the image if all go right
-	#cam.release() #Closes video file or capturing device.
-	div_factor = None
 
-	if DEV:
-		div_factor = 5
-	else:
-		div_factor = 1
+	# BG = "darkseagreen"
+	# r = tk.Tk() 
 
-	w = int(r.winfo_screenwidth()/div_factor)
-	h = int(r.winfo_screenheight()/div_factor)
-	r.configure(background="black")
+	# #cam = VideoCapture(0)  #set the port of the camera as before
+	# #retval, cam_image = cam.read() #return a True bolean and and the image if all go right
+	# #cam.release() #Closes video file or capturing device.
+	# div_factor = None
 
-	c = tk.Canvas(r, width=w, height=h)
-	c.configure(background=BG)
+	# if DEV:
+	# 	div_factor = 5
+	# else:
+	# 	div_factor = 1
+
+	# w = int(r.winfo_screenwidth()/div_factor)
+	# h = int(r.winfo_screenheight()/div_factor)
+	# r.configure(background="black")
+
+	# c = tk.Canvas(r, width=w, height=h)
+	# c.configure(background=BG)
 	
-	if DEV:
-		image = Image.open("res/Opti.png")
-	else:
-		image = Image.open("/usr/local/bin/optinomics/res/Opti.png")
+	# if DEV:
+	# 	image = Image.open("res/Opti.png")
+	# else:
+	# 	image = Image.open("/usr/local/bin/optinomics/res/Opti.png")
 
 
-	i_w = image.width
-	i_h = image.height
-	f_w = int(w*0.8)
-	f_h = int(i_h*(f_w/i_w))
+	# i_w = image.width
+	# i_h = image.height
+	# f_w = int(w*0.8)
+	# f_h = int(i_h*(f_w/i_w))
 
-	image = image.resize((f_w,f_h), PIL.Image.ANTIALIAS)
-	tkimg = ImageTk.PhotoImage(image)
-	c.create_image(int(f_w)/2+int(0.1*w),f_h, anchor=tk.CENTER,image=tkimg)
-	cam_image = None
+	# image = image.resize((f_w,f_h), PIL.Image.ANTIALIAS)
+	# tkimg = ImageTk.PhotoImage(image)
+	# c.create_image(int(f_w)/2+int(0.1*w),f_h, anchor=tk.CENTER,image=tkimg)
+	# cam_image = None
 
-	if cam_image is not None:
-		cam_image = cvtColor(cam_image, COLOR_BGR2RGB)
-		cam_image = Image.fromarray(cam_image)
-	else:
-		if DEV:
-			cam_image = misc.imread("res/matt.gif", mode='RGBA')
-		else:
-			cam_image = misc.imread("/usr/local/bin/optinomics/res/matt.gif", mode='RGBA')
+	# if cam_image is not None:
+	# 	cam_image = cvtColor(cam_image, COLOR_BGR2RGB)
+	# 	cam_image = Image.fromarray(cam_image)
+	# else:
+	# 	if DEV:
+	# 		cam_image = misc.imread("res/matt.gif", mode='RGBA')
+	# 	else:
+	# 		cam_image = misc.imread("/usr/local/bin/optinomics/res/matt.gif", mode='RGBA')
 	
-		cam_image = Image.fromarray(cam_image)
+	# 	cam_image = Image.fromarray(cam_image)
 
-	cam_image = cam_image.resize((int(w*0.2),(int(w*0.2))), PIL.Image.ANTIALIAS)
-	tk_cam_img = get_masked_img(cam_image,0)
-	cam_img_obj = c.create_image(int(w/2),f_h+int(h*0.4), anchor=tk.CENTER,image=tk_cam_img)
+	# cam_image = cam_image.resize((int(w*0.2),(int(w*0.2))), PIL.Image.ANTIALIAS)
+	# tk_cam_img = get_masked_img(cam_image,0)
+	# cam_img_obj = c.create_image(int(w/2),f_h+int(h*0.4), anchor=tk.CENTER,image=tk_cam_img)
 
-	NOTE = tk.StringVar()
-	NOTE.set("Accessing camera feed...")
-	status_var = "Accessing camera feed..."
-	c.itemconfig(mylabel,text=status_var)
+	# NOTE = tk.StringVar()
+	# NOTE.set("Accessing camera feed...")
+	# status_var = "Accessing camera feed..."
+	# c.itemconfig(mylabel,text=status_var)
 
-	mylabel = c.create_text((int(w/2),(0.9*h)),fill='white',font='sans-serif, 20', text=status_var,justify=tk.LEFT)
-	#button = tk.Button(r, text='Login', width=int(w/10))
-	c.pack()
-	r.update_idletasks()
+	# mylabel = c.create_text((int(w/2),(0.9*h)),fill='white',font='sans-serif, 20', text=status_var,justify=tk.LEFT)
+	# #button = tk.Button(r, text='Login', width=int(w/10))
+	# c.pack()
+	# r.update_idletasks()
 
-	time.sleep(2)
-	NOTE.set("Authenticating from camera feed...")
+	# time.sleep(2)
+	# NOTE.set("Authenticating from camera feed...")
 
-	status_var = "Authenticating from camera feed..."
-	c.itemconfig(mylabel,text=status_var)
-	r.update_idletasks()
+	# status_var = "Authenticating from camera feed..."
+	# c.itemconfig(mylabel,text=status_var)
+	# r.update_idletasks()
 
-	time.sleep(1)
+	# time.sleep(1)
 
-	for x in range(0, 360):
-		tk_cam_img = get_masked_img(cam_image,x)
-		c.itemconfig(cam_img_obj,image=tk_cam_img)
-		r.update_idletasks()
-		time.sleep(0.005)
+	# for x in range(0, 360):
+	# 	tk_cam_img = get_masked_img(cam_image,x)
+	# 	c.itemconfig(cam_img_obj,image=tk_cam_img)
+	# 	r.update_idletasks()
+	# 	time.sleep(0.005)
 
-	NOTE.set("Authenticated!")
-	c.itemconfig(mylabel,text="Authenticated!")
+	# NOTE.set("Authenticated!")
+	# c.itemconfig(mylabel,text="Authenticated!")
 
-	confirmed = c.create_oval(c.bbox(cam_img_obj), outline="green2",width=0)
+	# confirmed = c.create_oval(c.bbox(cam_img_obj), outline="green2",width=0)
 
-	for x in range(0, 10):
-		c.itemconfig(confirmed,width=x)
-		r.update_idletasks()
-		time.sleep(0.01)
+	# for x in range(0, 10):
+	# 	c.itemconfig(confirmed,width=x)
+	# 	r.update_idletasks()
+	# 	time.sleep(0.01)
 
-	time.sleep(0.5)
+	# time.sleep(0.5)
 
-	for x in range(0, 90):
-		c.move(cam_img_obj,0,5)
-		c.move(confirmed,0,5)
-		r.update_idletasks()
-		time.sleep(0.005)
+	# for x in range(0, 90):
+	# 	c.move(cam_img_obj,0,5)
+	# 	c.move(confirmed,0,5)
+	# 	r.update_idletasks()
+	# 	time.sleep(0.005)
 
-	c.delete(cam_img_obj)
-	c.delete(confirmed)
+	# c.delete(cam_img_obj)
+	# c.delete(confirmed)
 
-	time.sleep(1)
-	NOTE.set("Please login as normal.")
+	# time.sleep(1)
+	# NOTE.set("Please login as normal.")
 	
-	c.itemconfig(mylabel,text="Please login as normal.")
+	# c.itemconfig(mylabel,text="Please login as normal.")
 
-	USER = tk.StringVar()
-	PASS = tk.StringVar()
+	# USER = tk.StringVar()
+	# PASS = tk.StringVar()
 
-	user_input = tk.Entry(c,relief=tk.FLAT,textvariable=USER)
-	password_input = tk.Entry(c,relief=tk.FLAT,textvariable=PASS)
+	# user_input = tk.Entry(c,relief=tk.FLAT,textvariable=USER)
+	# password_input = tk.Entry(c,relief=tk.FLAT,textvariable=PASS)
 
-	login_button = tk.Button(c,text="Login",relief=tk.FLAT,font='sans-serif, 15',fg='white',bg='green',command=login_cb)
+	# login_button = tk.Button(c,text="Login",relief=tk.FLAT,font='sans-serif, 15',fg='white',bg='green',command=login_cb)
 
-	user_label = tk.Label(c,text="User:",font='sans-serif, 15',fg='white',bg=BG,justify='left')
+	# user_label = tk.Label(c,text="User:",font='sans-serif, 15',fg='white',bg=BG,justify='left')
 
-	password_label = tk.Label(c,text="Password:",font='sans-serif, 15',fg='white',bg=BG,justify='left')
+	# password_label = tk.Label(c,text="Password:",font='sans-serif, 15',fg='white',bg=BG,justify='left')
 
-	c.create_window(int(w/2),int(h/2)-30,window=user_label)
-	c.create_window(int(w/2),int(h/2),window=user_input)
-	c.create_window(int(w/2),int(h/2)+30,window=password_label)
-	c.create_window(int(w/2),int(h/2)+60,window=password_input)
-	c.create_window(int(w/2),int(h/2)+100,window=login_button)
+	# c.create_window(int(w/2),int(h/2)-30,window=user_label)
+	# c.create_window(int(w/2),int(h/2),window=user_input)
+	# c.create_window(int(w/2),int(h/2)+30,window=password_label)
+	# c.create_window(int(w/2),int(h/2)+60,window=password_input)
+	# c.create_window(int(w/2),int(h/2)+100,window=login_button)
 
 
-	while(True):
-		r.update()
+	#while(True):
+	#	r.update()
 	#	Gtk.main_iteration_do(False)
-	#Gtk.main()
+	Gtk.main()
