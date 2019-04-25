@@ -88,7 +88,7 @@ def authentication_complete_cb(greeter):
 	NOTE.set("Auth complete")
 	c.itemconfig(mylabel,text=NOTE.get())
 	if greeter.get_is_authenticated():
-		if not greeter.start_session_sync("xfce"):
+		if not greeter.start_session_sync(LightDM.get_sessions()[0]):
 			NOTE.set("Failed to start XFCE")
 			c.itemconfig(mylabel,text=NOTE.get())
 	else:
