@@ -26,19 +26,13 @@ ims = None
 greeter = None
 TIME_SCALE = 10
 
+STATE = None
+
 STATES = ["INIT","AUTH_INIT","AUTH_COMPLETE","LOGIN"]
 STATE_LABELS = ["Starting for webcam feed",
                 "Authenticating user...",
                 "User found in network!",
                 "Please Login"]
-
-def submitUserPass():
-    username = USER.get()
-    password = PASS.get()
-    greeter.authenticate(username)
-    greeter.respond(password)
-    if greeter.get_is_authenticated():
-        authentication_complete_cb(greeter)
 
 def show_message_func(greeter,text,type):
     setInfoLabel(info_label,text)
@@ -85,8 +79,6 @@ class State:
         if self.state_int >= len(STATES):
             self.state_int = 0
         self.set_state(STATES[self.state_int])
-
-STATE = None
 
 def pil2cairo(im):
     if im.mode != 'RGBA':
@@ -227,16 +219,6 @@ class Handler:
         else:
             login.set_visible(True)
 
-        
-css_P = Gtk.CssProvider()
-
-css_P.load_from_path("style.css")
-
-Gtk.StyleContext.add_provider_for_screen(
-    Gdk.Screen.get_default(),
-    css_P,
-    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-) 
 
 def image2pixbuf(im):
     arr = array.array('B', im.tobytes())
@@ -259,33 +241,6 @@ def setLogo(logo_obj,window):
     pix = image2pixbuf(logo_img)
     logo_obj.set_from_pixbuf(pix)
 
-handlers = {
-	"show-message":show_message_func,
-	"show-prompt":show_prompt_func
-}
-
-builder = Gtk.Builder()
-greeter = LightDM.Greeter()
-
-greeter.connect("show-message",show_message_func)
-greeter.connect("show-prompt",show_prompt_func)
-greeter.connect ("authentication-complete", authentication_complete_cb)
-
-if not DEV:
-	greeter.connect_to_daemon_sync()
-
-if DEV:
-    builder.add_from_file("gtk_glade.glade")
-else:
-    builder.add_from_file("/usr/local/bin/optinomics/res/gtk_glade.glade")
-
-builder.add_from_file("gtk_glade.glade")
-
-builder.connect_signals(Handler())
-
-window = builder.get_object("main_window")
-STATE = State(window)
-
 class Render:
     def __init__(self,window):
         self.window = window
@@ -305,12 +260,6 @@ def get_masked_img(src,arc):
 	src.putalpha(mask)
 	return src
 
-logo = builder.get_object("logo")
-setLogo(logo,window)
-
-info_label = builder.get_object("info_label")
-
-
 def setInfoLabel(label,text):
     markup = "<span font_desc='Source Code Pro Bold "
     size = 20
@@ -319,10 +268,56 @@ def setInfoLabel(label,text):
     #info_label.set_markup("<span font_desc='Sans 5.4'>%s</span>" % text)
     label.set_markup(markup)
 
-darea = builder.get_object("darea")
-login = builder.get_object("login")
 
-timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
-window.show_all()
+handlers = {
+	"show-message":show_message_func,
+	"show-prompt":show_prompt_func
+}
 
-Gtk.main()
+
+if __name__ == "__main__":
+    builder = Gtk.Builder()
+    greeter = LightDM.Greeter()
+
+    greeter.connect("show-message",show_message_func)
+    greeter.connect("show-prompt",show_prompt_func)
+    greeter.connect ("authentication-complete", authentication_complete_cb)
+
+    if not DEV:
+    	greeter.connect_to_daemon_sync()
+
+    if DEV:
+        builder.add_from_file("gtk_glade.glade")
+    else:
+        builder.add_from_file("/usr/local/bin/optinomics/res/gtk_glade.glade")
+
+    builder.add_from_file("gtk_glade.glade")
+
+    builder.connect_signals(Handler())
+
+    window = builder.get_object("main_window")
+    STATE = State(window)
+
+      
+    css_P = Gtk.CssProvider()
+
+    css_P.load_from_path("style.css")
+
+    Gtk.StyleContext.add_provider_for_screen(
+        Gdk.Screen.get_default(),
+        css_P,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+    ) 
+
+    logo = builder.get_object("logo")
+    setLogo(logo,window)
+
+    info_label = builder.get_object("info_label")
+
+    darea = builder.get_object("darea")
+    login = builder.get_object("login")
+
+    timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
+    window.show_all()
+
+    Gtk.main()
