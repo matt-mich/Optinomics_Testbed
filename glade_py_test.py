@@ -282,6 +282,7 @@ handlers = {
 
 
 if __name__ == "__main__":
+    exit()
     builder = Gtk.Builder()
     greeter = LightDM.Greeter()
 
