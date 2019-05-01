@@ -305,7 +305,7 @@ if __name__ == "__main__":
     Gtk.StyleContext.add_provider_for_screen(
         Gdk.Screen.get_default(),
         css_P,
-        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        Gtk.STYLE_PROVIDER_PRIORITY_USER
     )
 
     logo = builder.get_object("logo")
