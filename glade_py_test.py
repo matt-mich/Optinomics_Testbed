@@ -302,8 +302,8 @@ if __name__ == "__main__":
         builder.add_from_file("gtk_glade.glade")
     else:
         css_P.load_from_path("/usr/local/bin/optinomics/res/style.css")
-        Gdk.StyleContext.add_provider_for_screen(
-            Gtk.Screen.get_default(),
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
             css_P,
             Gtk.STYLE_PROVIDER_PRIORITY_USER
         )
