@@ -291,14 +291,12 @@ if __name__ == "__main__":
     else:
         builder.add_from_file("/usr/local/bin/optinomics/gtk_glade.glade")
 
-    builder.add_from_file("gtk_glade.glade")
-
     builder.connect_signals(Handler())
 
     window = builder.get_object("main_window")
+
     STATE = State(window)
 
-      
     css_P = Gtk.CssProvider()
 
     css_P.load_from_path("style.css")
