@@ -23,7 +23,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 from gi.repository import GObject, LightDM
 
 info_label = None
-DEV = False
+DEV = True
 ims = None
 greeter = None
 builder = None
