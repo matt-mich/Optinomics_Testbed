@@ -291,7 +291,7 @@ if __name__ == "__main__":
     greeter.connect ("authentication-complete", authentication_complete_cb)
 
     css_P = Gtk.CssProvider()
-
+    print(Gdk.Screen.get_default()s)
     if DEV:
         css_P.load_from_path("res/style.css")
         Gtk.StyleContext.add_provider_for_screen(
