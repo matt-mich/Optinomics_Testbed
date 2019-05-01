@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # NOTE: This code is in a prototype state and may 
 # still contain unattributed example code. 
 
@@ -282,9 +284,9 @@ handlers = {
 
 
 if __name__ == "__main__":
-    exit()
     builder = Gtk.Builder()
     greeter = LightDM.Greeter()
+    exit()
 
     greeter.connect("show-message",show_message_func)
     greeter.connect("show-prompt",show_prompt_func)
