@@ -304,6 +304,14 @@ if __name__ == "__main__":
 
     window = builder.get_object("main_window")
 
+    if not DEV:
+    	greeter.connect_to_daemon_sync()
+
+    window.show_all()
+
+    Gtk.main()
+
+
     # window.StyleContext.add_provider_for_screen(
     #     window.get_screen(),
     #     css_P,
@@ -311,6 +319,7 @@ if __name__ == "__main__":
     # )
 
     logo = builder.get_object("logo")
+    
     setLogo(logo,window)
 
     info_label = builder.get_object("info_label")
@@ -321,9 +330,9 @@ if __name__ == "__main__":
     timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
     STATE = State(window)
 
-    if not DEV:
-    	greeter.connect_to_daemon_sync()
+    # if not DEV:
+    # 	greeter.connect_to_daemon_sync()
 
-    window.show_all()
+    # window.show_all()
 
-    Gtk.main()
+    # Gtk.main()
