@@ -289,7 +289,7 @@ if __name__ == "__main__":
     if DEV:
         builder.add_from_file("gtk_glade.glade")
     else:
-        builder.add_from_file("/usr/local/bin/optinomics/res/gtk_glade.glade")
+        builder.add_from_file("/usr/local/bin/optinomics/gtk_glade.glade")
 
     builder.add_from_file("gtk_glade.glade")
 
