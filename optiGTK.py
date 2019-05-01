@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-import time
-from scipy import misc
-import PIL
-from PIL import Image, ImageDraw, ImageTk, ImageOps
-from cv2 import *
+# import time
+# from scipy import misc
+# import PIL
+# from PIL import Image, ImageDraw, ImageTk, ImageOps
+# from cv2 import *
 import gi
-import logging
+# import logging
 gi.require_version('Gtk', '3.0') 
 gi.require_version('LightDM', '1')
 
@@ -16,7 +16,7 @@ from gi.repository import Gtk
 
 from gi.repository import LightDM
 
-import sys
+# import sys
 
 DEV = True
 
