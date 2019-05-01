@@ -23,7 +23,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 from gi.repository import GObject, LightDM
 
 info_label = None
-DEV = False
+DEV = True
 ims = None
 greeter = None
 builder = None
@@ -297,7 +297,7 @@ if __name__ == "__main__":
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             css_P,
-            Gtk.STYLE_PROVIDER_PRIORITY_USER
+            400
         )
         builder.add_from_file("gtk_glade.glade")
     else:
@@ -305,7 +305,7 @@ if __name__ == "__main__":
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             css_P,
-            Gtk.STYLE_PROVIDER_PRIORITY_USER
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
         builder.add_from_file("/usr/local/bin/optinomics/gtk_glade.glade")
 
@@ -319,13 +319,7 @@ if __name__ == "__main__":
     if not DEV:
     	greeter.connect_to_daemon_sync()
 
-    window.show_all()
-
-    Gtk.main()
-
-
-
-
+    
     logo = builder.get_object("logo")
     
     setLogo(logo,window)
@@ -338,9 +332,9 @@ if __name__ == "__main__":
     timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
     STATE = State(window)
 
-    # if not DEV:
-    # 	greeter.connect_to_daemon_sync()
+    if not DEV:
+    	greeter.connect_to_daemon_sync()
 
-    # window.show_all()
+    window.show_all()
 
-    # Gtk.main()
+    Gtk.main()
