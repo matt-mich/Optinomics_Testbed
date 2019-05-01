@@ -282,11 +282,9 @@ handlers = {
 	"show-prompt":show_prompt_func
 }
 
-
 if __name__ == "__main__":
     builder = Gtk.Builder()
     greeter = LightDM.Greeter()
-    exit()
 
     greeter.connect("show-message",show_message_func)
     greeter.connect("show-prompt",show_prompt_func)
@@ -300,6 +298,7 @@ if __name__ == "__main__":
     else:
         builder.add_from_file("/usr/local/bin/optinomics/gtk_glade.glade")
 #        css_P.load_from_path("/usr/local/bin/optinomics/res/style.css")
+    exit()
 
 #    css_P.load_from_data("*{background-color:darkseagreen;}")
 
