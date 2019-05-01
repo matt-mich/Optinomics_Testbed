@@ -296,17 +296,19 @@ if __name__ == "__main__":
         css_P.load_from_path("res/style.css")
     else:
         builder.add_from_file("/usr/local/bin/optinomics/gtk_glade.glade")
-        css_P.load_from_path("/usr/local/bin/optinomics/res/style.css")
+#        css_P.load_from_path("/usr/local/bin/optinomics/res/style.css")
+
+#    css_P.load_from_data("*{background-color:darkseagreen;}")
 
     builder.connect_signals(Handler())
 
     window = builder.get_object("main_window")
 
-    Gtk.StyleContext.add_provider_for_screen(
-        Gdk.Screen.get_default(),
-        css_P,
-        Gtk.STYLE_PROVIDER_PRIORITY_USER
-    )
+    # window.StyleContext.add_provider_for_screen(
+    #     window.get_screen(),
+    #     css_P,
+    #     Gtk.STYLE_PROVIDER_PRIORITY_USER
+    # )
 
     logo = builder.get_object("logo")
     setLogo(logo,window)
