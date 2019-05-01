@@ -300,7 +300,7 @@ if __name__ == "__main__":
 
 #    css_P.load_from_data("*{background-color:darkseagreen;}")
 
-    builder.connect_signals(Handler())
+#    builder.connect_signals(Handler())
 
     window = builder.get_object("main_window")
 
