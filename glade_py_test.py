@@ -297,7 +297,7 @@ if __name__ == "__main__":
     else:
         builder.add_from_file("/usr/local/bin/optinomics/gtk_glade.glade")
 
-    builder.connect_signals(Handler())
+    #builder.connect_signals(Handler())
 
     window = builder.get_object("main_window")
 
