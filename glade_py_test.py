@@ -4,16 +4,12 @@
 # still contain unattributed example code. 
 
 import gi
-import PIL
+import PIL.Image
 import array
 import sys
 import numpy as np
-from scipy import misc
 import math
-from PIL import Image, ImageDraw, ImageTk, ImageOps
-from cv2 import *
 import cairo
-from cairo import ImageSurface
 import time
 
 gi.require_version('LightDM', '1')
@@ -23,7 +19,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 from gi.repository import GObject, LightDM
 
 info_label = None
-DEV = True
+DEV = False
 ims = None
 greeter = None
 builder = None
@@ -132,9 +128,9 @@ class Handler:
         STATE.inc_time()
 
         if DEV:
-            cam_image = Image.open("res/matt.png").convert('RGB')
+            cam_image = PIL.Image.open("res/matt.png").convert('RGB')
         else:
-            cam_image = Image.open("/usr/local/bin/optinomics/res/matt.png").convert('RGB')
+            cam_image = PIL.Image.open("/usr/local/bin/optinomics/res/matt.png").convert('RGB')
 
         cam_image = cam_image.crop((0,0,cam_image.width,cam_image.width))
         fin_size = int(win_w*0.5)
@@ -151,7 +147,7 @@ class Handler:
         mBlack = (RGBA[:, :, 0:3] == [0,0,0]).all(2)
         # Make all pixels matched by mask into transparent ones
         RGBA[mBlack] = (0,0,0,0)
-        cam_image = Image.fromarray(RGBA)
+        cam_image = PIL.Image.fromarray(RGBA)
         #cam_image = Image.fromarray(cam_image)
      
         #cam_image = get_masked_img(cam_image,0)
@@ -231,9 +227,9 @@ def image2pixbuf(im):
 
 def setLogo(logo_obj,window):
     if DEV:
-        logo_img = Image.open('res/Opti.png')
+        logo_img = PIL.Image.open('res/Opti.png')
     else:
-        logo_img = Image.open('/usr/local/bin/optinomics/res/Opti.png')
+        logo_img = PIL.Image.open('/usr/local/bin/optinomics/res/Opti.png')
 
     w,h = logo_img.width, logo_img.height
 
@@ -243,7 +239,7 @@ def setLogo(logo_obj,window):
     print(window.get_size())
     scale = win_w/w
     scale *= 0.2
-    logo_img = logo_img.resize((int(w*scale),int(h*scale)),Image.ANTIALIAS)
+    logo_img = logo_img.resize((int(w*scale),int(h*scale)),PIL.Image.ANTIALIAS)
     #logo_arr = np.array(logo_img.tostring())
     #GdkPixbuf.Pixbuf.new_from_data(logo_arr, GdkPixbuf.Colorspace.RGB, True, 8, logo_arr.shape[1], logo_arr.shape[0], logo_arr.shape[1] * 4)
     pix = image2pixbuf(logo_img)
@@ -261,10 +257,10 @@ def win_draw(self):
     timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
 
 def get_masked_img(src,arc):
-	mask = Image.new('L', (src.width,src.height), 0)
-	draw = ImageDraw.Draw(mask)
+	mask = PIL.Image.new('L', (src.width,src.height), 0)
+	draw = PIL.ImageDraw.Draw(mask)
 	draw.pieslice((0, 0) + mask.size,0,arc, fill=255)
-	src = ImageOps.fit(src, mask.size, centering=(0.5, 0.5))
+	src = PIL.ImageOps.fit(src, mask.size, centering=(0.5, 0.5))
 	src.putalpha(mask)
 	return src
 
