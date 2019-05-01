@@ -24,11 +24,13 @@ info_label = None
 DEV = False
 ims = None
 greeter = None
+builder = None
 TIME_SCALE = 10
 
 STATE = None
 
 STATES = ["INIT","AUTH_INIT","AUTH_COMPLETE","LOGIN"]
+
 STATE_LABELS = ["Starting for webcam feed",
                 "Authenticating user...",
                 "User found in network!",
@@ -130,7 +132,7 @@ class Handler:
         if DEV:
             cam_image = Image.open("res/matt.png").convert('RGB')
         else:
-            cam_image = misc.imread("/usr/local/bin/optinomics/res/matt.gif", mode='RGBA')
+            cam_image = Image.open("/usr/local/bin/optinomics/res/matt.png").convert('RGB')
 
         cam_image = cam_image.crop((0,0,cam_image.width,cam_image.width))
         fin_size = int(win_w*0.5)
@@ -226,7 +228,11 @@ def image2pixbuf(im):
     return GdkPixbuf.Pixbuf.new_from_data(arr, GdkPixbuf.Colorspace.RGB,True, 8, width, height, width * 4)
 
 def setLogo(logo_obj,window):
-    logo_img = Image.open('res/Opti.png')
+    if DEV:
+        logo_img = Image.open('res/Opti.png')
+    else:
+        logo_img = Image.open('/usr/local/bin/optinomics/res/Opti.png')
+
     w,h = logo_img.width, logo_img.height
 
     win_w = window.get_screen().get_width()
@@ -316,6 +322,7 @@ if __name__ == "__main__":
     login = builder.get_object("login")
 
     timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
+
     window.show_all()
 
     Gtk.main()
