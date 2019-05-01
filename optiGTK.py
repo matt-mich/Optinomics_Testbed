@@ -21,7 +21,7 @@ import sys
 DEV = True
 
 if __name__ == "__main__":
-    builder = Gtk.Builder()
+    #builder = Gtk.Builder()
     greeter = LightDM.Greeter()
 
     if not DEV:
@@ -33,7 +33,6 @@ if __name__ == "__main__":
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
             self.add(vbox)
             #self.u_entry = Gtk.Entry()
-
 
             #self.p_entry = Gtk.Entry()
             self.button = Gtk.Button(label="Click Here")
