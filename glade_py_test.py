@@ -21,7 +21,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 from gi.repository import GObject, LightDM
 
 info_label = None
-DEV = True
+DEV = False
 ims = None
 greeter = None
 builder = None
@@ -323,7 +323,7 @@ if __name__ == "__main__":
 
     timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
     STATE = State(window)
-    
+
     window.show_all()
 
     Gtk.main()
