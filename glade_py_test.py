@@ -23,7 +23,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 from gi.repository import GObject, LightDM
 
 info_label = None
-DEV = True
+DEV = False
 ims = None
 greeter = None
 builder = None
@@ -305,7 +305,7 @@ if __name__ == "__main__":
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             css_P,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            400
         )
         builder.add_from_file("/usr/local/bin/optinomics/gtk_glade.glade")
 
