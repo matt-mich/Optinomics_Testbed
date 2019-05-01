@@ -303,7 +303,7 @@ if __name__ == "__main__":
     else:
         css_P.load_from_path("/usr/local/bin/optinomics/res/style.css")
         Gdk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
+            Gtk.Screen.get_default(),
             css_P,
             Gtk.STYLE_PROVIDER_PRIORITY_USER
         )
