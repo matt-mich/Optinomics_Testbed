@@ -16,6 +16,7 @@ from gi.repository import GLib
 from gi.repository import Gtk
 
 from gi.repository import LightDM
+
 import sys
 c = None
 mylabel = None
@@ -116,8 +117,8 @@ if __name__ == "__main__":
 
 	greeter.connect("show-message",show_message_func)
 	greeter.connect("show-prompt",show_prompt_func)
-
 	greeter.connect ("authentication-complete", authentication_complete_cb)
+
 	if not DEV:
 		greeter.connect_to_daemon_sync()
 

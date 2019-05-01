@@ -107,9 +107,6 @@ class Example(Gtk.Window):
         
         cr.set_source_rgb(0.3, 0.4, 0.6)
 
-
-
-
 def main():
     
     app = Example()
