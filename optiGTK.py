@@ -18,7 +18,7 @@ from gi.repository import LightDM
 
 # import sys
 
-DEV = True
+DEV = False
 
 if __name__ == "__main__":
     #builder = Gtk.Builder()
