@@ -18,6 +18,7 @@ from gi.repository import Gtk
 from gi.repository import LightDM
 
 import sys
+
 c = None
 mylabel = None
 NOTE = None

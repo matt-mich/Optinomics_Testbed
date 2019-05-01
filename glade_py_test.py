@@ -289,12 +289,7 @@ if __name__ == "__main__":
     greeter.connect("show-prompt",show_prompt_func)
     greeter.connect ("authentication-complete", authentication_complete_cb)
 
-
     css_P = Gtk.CssProvider()
-
-
-    if not DEV:
-    	greeter.connect_to_daemon_sync()
 
     if DEV:
         builder.add_from_file("gtk_glade.glade")
@@ -311,7 +306,7 @@ if __name__ == "__main__":
         Gdk.Screen.get_default(),
         css_P,
         Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-    ) 
+    )
 
     logo = builder.get_object("logo")
     setLogo(logo,window)
@@ -323,6 +318,9 @@ if __name__ == "__main__":
 
     timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
     STATE = State(window)
+
+    if not DEV:
+    	greeter.connect_to_daemon_sync()
 
     window.show_all()
 
