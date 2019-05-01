@@ -21,7 +21,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 from gi.repository import GObject, LightDM
 
 info_label = None
-DEV = False
+DEV = True
 ims = None
 greeter = None
 builder = None
@@ -49,7 +49,7 @@ def authentication_complete_cb(greeter):
             
 class State:
     def __init__(self,window):
-        self.STATE = STATES[0]
+        self.set_state(STATES[0])
         self.state_int = 0
         self.tick = 0
         self.init_time = time.time();
@@ -165,7 +165,7 @@ class Handler:
             offset = math.pi*1.5
             cr.set_source_rgb(1.0, 1.0, 1.0)
             cr.arc(0, 0, cam_image.size[0]/2, 0, math.pi*2)
-            cr.set_source_rgb(0.3, 0.4, 0.6)
+            cr.set_source_rgb(0.0, 0.0, 0.0)
             cr.fill()
 
             cr.set_line_width(15)
@@ -289,23 +289,23 @@ if __name__ == "__main__":
     greeter.connect("show-prompt",show_prompt_func)
     greeter.connect ("authentication-complete", authentication_complete_cb)
 
+
+    css_P = Gtk.CssProvider()
+
+
     if not DEV:
     	greeter.connect_to_daemon_sync()
 
     if DEV:
         builder.add_from_file("gtk_glade.glade")
+        css_P.load_from_path("res/style.css")
     else:
         builder.add_from_file("/usr/local/bin/optinomics/gtk_glade.glade")
+        css_P.load_from_path("/usr/local/bin/optinomics/res/style.css")
 
-    #builder.connect_signals(Handler())
+    builder.connect_signals(Handler())
 
     window = builder.get_object("main_window")
-
-    STATE = State(window)
-
-    css_P = Gtk.CssProvider()
-
-    css_P.load_from_path("style.css")
 
     Gtk.StyleContext.add_provider_for_screen(
         Gdk.Screen.get_default(),
@@ -322,7 +322,8 @@ if __name__ == "__main__":
     login = builder.get_object("login")
 
     timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
-
+    STATE = State(window)
+    
     window.show_all()
 
     Gtk.main()
