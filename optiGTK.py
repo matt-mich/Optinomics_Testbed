@@ -342,14 +342,19 @@ if __name__ == "__main__":
     if not DEV:
     	greeter.connect_to_daemon_sync()
 
-
     screen = window.get_screen()
     screen_width = screen.get_width()
     screen_height = screen.get_height()
     debug_print("S_W: " + str(screen_width) + " S_H: " + str(screen_height))
 
+    geo = Gdk.Geometry()
+    geo.min_width = screen_width
+    geo.min_height = screen_height
+    window.set_geometry_hints(None, geo, Gdk.WindowHints.MIN_SIZE)
+
     window.set_default_size(screen_width,screen_height)
     window.show_all()
+    window.resize(screen_width,screen_height)
 
     # class OptiGreeter(Gtk.Window):
     #     def __init__(self):
