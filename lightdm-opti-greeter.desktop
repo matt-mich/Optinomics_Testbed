@@ -1,5 +1,5 @@
 [Desktop Entry]
 Name=Optinomics Greeter
 Comment=Optinomics Greeter
-Exec=/usr/local/bin/optinomics/optiGTK.py
+Exec=/usr/local/bin/optinomics/optiGTK.py 1
 Type=Application
