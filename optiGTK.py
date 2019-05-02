@@ -302,15 +302,60 @@ if __name__ == "__main__":
     if not DEV:
         greeter.connect_to_daemon_sync()
 
-    class OptiGreeter(Gtk.Window):
-        def __init__(self):
-            Gtk.Window.__init__(self, title="OptiGreeter")
+    greeter.connect("show-message",show_message_func)
+    greeter.connect("show-prompt",show_prompt_func)
+    greeter.connect ("authentication-complete", authentication_complete_cb)
 
-            #self.add(self.u_entry)
-            #self.add(self.p_entry)
+    css_P = Gtk.CssProvider()
+    if DEV:
+        css_P.load_from_path("res/style.css")
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            css_P,
+            400
+        )
+        builder.add_from_file("gtk_glade.glade")
+    else:
+        css_P.load_from_path("/usr/local/bin/optinomics/res/style.css")
+        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),css_P,400)
+        builder.add_from_file("/usr/local/bin/optinomics/gtk_glade.glade")
 
-    win = OptiGreeter()
-    win.connect("destroy", Gtk.main_quit)
-    win.show_all()
+    builder.connect_signals(Handler())
+
+    window = builder.get_object("main_window")
+
+    if not DEV:
+    	greeter.connect_to_daemon_sync()
+
+    
+    logo = builder.get_object("logo")
+    
+    setLogo(logo,window)
+
+    info_label = builder.get_object("info_label")
+
+    darea = builder.get_object("darea")
+    login = builder.get_object("login")
+
+    timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
+    STATE = State(window)
+
+    if not DEV:
+    	greeter.connect_to_daemon_sync()
+
+    window.show_all()
+
+
+
+    # class OptiGreeter(Gtk.Window):
+    #     def __init__(self):
+    #         Gtk.Window.__init__(self, title="OptiGreeter")
+
+    #         #self.add(self.u_entry)
+    #         #self.add(self.p_entry)
+
+    # win = OptiGreeter()
+    # win.connect("destroy", Gtk.main_quit)
+    # win.show_all()
 
     Gtk.main()
