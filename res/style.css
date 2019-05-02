@@ -1,12 +1,22 @@
-*{
-    background-color:darkseagreen;
+.main_grid{
+    background-color: darkseagreen;
 }
 
-.draw_top{
+.button{
     background-color:darkgreen;
 }
 
 .login{
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Arial', Courier, monospace;
     font-weight: bold;
+}
+
+.user_input_box{
+    color: darkslategrey;
+    background-color: whitesmoke;
+}
+
+.pass_input_box{
+    color: darkslategrey;
+    background-color: whitesmoke;
 }

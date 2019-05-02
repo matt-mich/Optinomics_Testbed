@@ -27,7 +27,7 @@ STATE = None
 
 STATES = ["INIT","AUTH_INIT","AUTH_COMPLETE","LOGIN"]
 
-STATE_LABELS = ["Starting for webcam feed",
+STATE_LABELS = ["Starting webcam feed",
                 "Authenticating user...",
                 "User found in network!",
                 "Please Login"]
@@ -109,9 +109,12 @@ class Handler:
     def onDestroy(self, *args):
         print("Destroy!")
         Gtk.main_quit()
-    
-    def next_press(self, *args):
-        STATE.inc_state()
+
+    def keypress(self,win,event_key):
+        print("keypress")
+        print(event_key.keyval)
+        if event_key.keyval == 65289:
+            STATE.inc_state()
 
     def onButtonPressed(self, button):
         if greeter.get_is_authenticated():
