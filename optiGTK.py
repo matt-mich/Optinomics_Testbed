@@ -290,6 +290,8 @@ def debug_print(msg):
 
 if __name__ == "__main__":
     #builder = Gtk.Builder()
+    debug_print("Testing")
+
     if len(sys.argv) > 1 and sys.argv[1] == 'dev':
         DEV = True
         debug_print("Started DEV Mode")
