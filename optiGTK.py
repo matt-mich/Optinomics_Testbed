@@ -277,26 +277,24 @@ handlers = {
 }
 
 
-DEV = True
+DEV = False
 
 def debug_print(msg):
     if DEV:
         f = open("pyGTK_log.txt","a+")
     else:
         f = open("/home/matt/git/Optinomics_Testbed/pyGTK_log.txt","a+")
-
 #        f = open("/home/pyGTK_log.txt","a+")
     f.write(msg+"\n")
     f.close()
 
 if __name__ == "__main__":
     #builder = Gtk.Builder()
-    if len(sys.argv) > 1:
-        if sys.argv[1] == '1':
-            DEV = False
-            debug_print("Started")
+    if len(sys.argv) > 1 and sys.argv[1] == 'dev':
+        DEV = True
+        debug_print("Started DEV Mode")
     else:
-        debug_print("Started in DEV mode")            
+        debug_print("Started in GREETER mode")            
 
     greeter = LightDM.Greeter()
 

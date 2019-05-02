@@ -50,8 +50,8 @@ class State:
         self.set_state(STATES[0])
         self.state_int = 0
         self.tick = 0
-        self.init_time = time.time();
-        self.prev_time = time.time();
+        self.init_time = time.time()
+        self.prev_time = time.time()
         self.update_dims(window)
 
     def update_dims(self,window):
@@ -66,7 +66,7 @@ class State:
         setInfoLabel(info_label,STATE_LABELS[STATES.index(state)])
         self.tick = 0
         self.init_time = time.time()
-        self.prev_time = time.time();
+        self.prev_time = time.time()
 
     def get_time(self):
         return self.tick
