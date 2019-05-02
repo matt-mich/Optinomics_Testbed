@@ -289,7 +289,7 @@ def debug_print(msg):
     f.close()
 
 if __name__ == "__main__":
-    #builder = Gtk.Builder()
+    builder = Gtk.Builder()
     
     if len(sys.argv) > 1 and sys.argv[1] == 'dev':
         DEV = True
