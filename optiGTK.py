@@ -347,6 +347,7 @@ if __name__ == "__main__":
     screen_width = screen.get_width()
     screen_height = screen.get_height()
     debug_print("S_W: " + str(screen_width) + " S_H: " + str(screen_height))
+
     window.set_default_size(screen_width,screen_height)
     window.show_all()
 
