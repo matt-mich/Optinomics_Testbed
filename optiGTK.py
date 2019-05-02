@@ -290,6 +290,10 @@ def debug_print(msg):
 
 if __name__ == "__main__":
     #builder = Gtk.Builder()
+    f = open("/usr/local/bin/optinomics/pyGTK_log.txt","a+")
+    f.write("hello\n")
+    exit()
+
     debug_print("Testing")
 
     if len(sys.argv) > 1 and sys.argv[1] == 'dev':
