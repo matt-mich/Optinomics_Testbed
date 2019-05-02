@@ -266,7 +266,6 @@ def setInfoLabel(label,text):
     markup = "<span font_desc='Source Code Pro Bold "
     size = 20
     markup = markup + str(size) +"'>" + text + "</span>"
-    print(markup)
     #info_label.set_markup("<span font_desc='Sans 5.4'>%s</span>" % text)
     label.set_markup(markup)
 
@@ -345,7 +344,6 @@ if __name__ == "__main__":
 
     window.show_all()
     window.fullscreen()
-
 
     # class OptiGreeter(Gtk.Window):
     #     def __init__(self):
