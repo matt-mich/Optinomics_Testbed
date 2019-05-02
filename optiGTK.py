@@ -283,19 +283,14 @@ def debug_print(msg):
     if DEV:
         f = open("pyGTK_log.txt","a+")
     else:
-        f = open("/home/matt/git/Optinomics_Testbed/pyGTK_log.txt","a+")
+        f = open("/usr/local/bin/optinomics/pyGTK_log.txt","a+")
 #        f = open("/home/pyGTK_log.txt","a+")
     f.write(msg+"\n")
     f.close()
 
 if __name__ == "__main__":
     #builder = Gtk.Builder()
-    f = open("/usr/local/bin/optinomics/pyGTK_log.txt","a+")
-    f.write("hello\n")
-    exit()
-
-    debug_print("Testing")
-
+    
     if len(sys.argv) > 1 and sys.argv[1] == 'dev':
         DEV = True
         debug_print("Started DEV Mode")
