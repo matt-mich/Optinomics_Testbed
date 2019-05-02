@@ -23,7 +23,7 @@ DEV = True
 def debug_print(msg):
 
     if DEV:
-        f = open("pyGTK_log.txt","a+");
+        f = open("pyGTK_log.txt","a+")
     else:
         f = open("/home/matt/git/Optinomics_Testbed/pyGTK_log.txt","a+")
     f.write(msg)
