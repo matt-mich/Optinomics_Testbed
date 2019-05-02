@@ -40,7 +40,7 @@ def show_prompt_func(greeter,text,type):
     
 def authentication_complete_cb(greeter):
     if greeter.get_is_authenticated():
-        if not greeter.start_session_sync("xfce4-session"):
+        if not greeter.start_session_sync("xfce"):
             setInfoLabel(info_label,"Failed to start xfce")
     else:
         setInfoLabel(info_label,"Auth failed")
