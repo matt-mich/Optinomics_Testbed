@@ -344,7 +344,7 @@ if __name__ == "__main__":
     	greeter.connect_to_daemon_sync()
 
     window.show_all()
-
+    window.fullscreen()
 
 
     # class OptiGreeter(Gtk.Window):
