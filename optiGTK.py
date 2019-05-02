@@ -16,12 +16,30 @@ from gi.repository import Gtk
 
 from gi.repository import LightDM
 
-# import sys
+import sys
 
-DEV = False
+DEV = True
+
+def debug_print(msg):
+
+    if DEV:
+        f = open("pyGTK_log.txt","a+");
+    else:
+        f = open("/home/matt/git/Optinomics_Testbed/pyGTK_log.txt","a+")
+    f.write(msg)
+    f.close()
 
 if __name__ == "__main__":
     #builder = Gtk.Builder()
+
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 1:
+            DEV = False
+            debug_print("Started")
+    else:
+        debug_print("Started in DEV mode")            
+
+        
     greeter = LightDM.Greeter()
 
     if not DEV:
