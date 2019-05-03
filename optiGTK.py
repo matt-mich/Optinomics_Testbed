@@ -315,18 +315,20 @@ def debug_print(msg):
 
 if __name__ == "__main__":
     builder = Gtk.Builder()
-    try:
-        cam = cv2.VideoCapture(0)  #set the port of the camera as before
-        CAM_FOUND = True
-        cam.close()
-    except:
-        CAM_FOUND = False
-
     if len(sys.argv) > 1 and sys.argv[1] == 'dev':
         DEV = True
         debug_print("Started DEV Mode")
     else:
         debug_print("Started in GREETER mode")            
+
+    try:
+        cam = cv2.VideoCapture(0)  #set the port of the camera as before
+        CAM_FOUND = True
+        debug_print("CAM FOUND!")
+        cam.release()
+    except:
+        CAM_FOUND = False
+
 
     greeter = LightDM.Greeter()
 
