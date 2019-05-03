@@ -15,6 +15,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 from gi.repository import GObject, LightDM
 
+
 info_label = None
 DEV = True
 ims = None
@@ -30,6 +31,17 @@ STATE_LABELS = ["Starting webcam feed",
                 "Authenticating user...",
                 "User found in network!",
                 "Please Login"]
+
+ANIM_QUEUE = []
+
+class Animation:
+    def __init__(self):
+        self.total_stages = 0
+        self.equation = None
+    # def isFinished(self):
+    # def isStarted(self):
+    # def isFinished(self):
+    # def isFinished(self):
 
 def show_message_func(greeter,text,type):
     setInfoLabel(info_label,text)
