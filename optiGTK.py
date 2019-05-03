@@ -146,24 +146,31 @@ class Handler:
         STATE.inc_time()
 
         if CAM_FOUND:
-            retval, cam_image = cam.read() #return a True bolean and and the image if all go right
+            retval, cam_image = cam.read()
             img = cv2.cvtColor(cam_image, cv2.COLOR_BGR2RGB)
             cam_image = PIL.Image.fromarray(img).convert('RGB')
+            cam_image =  PIL.ImageOps.mirror(cam_image)
         else:
             if DEV:
                 cam_image = PIL.Image.open("res/matt.png").convert('RGB')
             else:
                 cam_image = PIL.Image.open("/usr/local/bin/optinomics/res/matt.png").convert('RGB')
         fin_dim = 0;
+        dim_cropped = 0;
+
         if cam_image.width > cam_image.height:
             fin_dim = cam_image.height
+            dim_cropped = cam_image.width - cam_image.height
+            cam_image = cam_image.crop((int(dim_cropped/2),0,fin_dim,fin_dim))            
         else:
             fin_dim = cam_image.width
+            dim_cropped = cam_image.width - cam_image.height
+            cam_image = cam_image.crop((0,int(dim_cropped/2),fin_dim,fin_dim))
 
         cam_image = cam_image.crop((0,0,fin_dim,fin_dim))
 
 
-        fin_size = int(win_w*0.5)
+        fin_size = int(win_w*0.3)
 
         cam_image = cam_image.resize((fin_size,fin_size), PIL.Image.ANTIALIAS)
 
