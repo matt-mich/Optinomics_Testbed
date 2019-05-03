@@ -146,9 +146,7 @@ class Handler:
         STATE.inc_time()
 
         if CAM_FOUND:
-            cam = cv2.VideoCapture(0)  #set the port of the camera as before
             retval, cam_image = cam.read() #return a True bolean and and the image if all go right
-            cam.release() #Closes video file or capturing device.
             img = cv2.cvtColor(cam_image, cv2.COLOR_BGR2RGB)
             cam_image = PIL.Image.fromarray(img).convert('RGB')
         else:
