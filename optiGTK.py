@@ -149,7 +149,6 @@ class Handler:
             cam.release() #Closes video file or capturing device.
             img = cv2.cvtColor(cam_image, cv2.COLOR_BGR2RGB)
             cam_image = PIL.Image.fromarray(img).convert('RGB')
-            cam_found = True
         else:
             if DEV:
                 cam_image = PIL.Image.open("res/matt.png").convert('RGB')
@@ -316,11 +315,12 @@ def debug_print(msg):
 
 if __name__ == "__main__":
     builder = Gtk.Builder()
-    # try:
-    #     cam = cv2.VideoCapture(0)  #set the port of the camera as before
-    #     CAM_FOUND = True
-    # except:
-    #     CAM_FOUND = False
+    try:
+        cam = cv2.VideoCapture(0)  #set the port of the camera as before
+        CAM_FOUND = True
+        cam.close()
+    except:
+        CAM_FOUND = False
 
     if len(sys.argv) > 1 and sys.argv[1] == 'dev':
         DEV = True
