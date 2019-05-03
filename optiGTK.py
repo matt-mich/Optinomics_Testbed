@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 import gi
 import PIL.Image
 import array
@@ -82,7 +81,6 @@ class State:
 def pil2cairo(im):
     if im.mode != 'RGBA':
         im = im.convert('RGBA')
-    
     s = im.tobytes('raw', 'BGRA')
     a = array.array('B', s)
     dest = cairo.ImageSurface(cairo.FORMAT_ARGB32, im.size[0], im.size[1])
