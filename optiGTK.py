@@ -316,11 +316,11 @@ def debug_print(msg):
 
 if __name__ == "__main__":
     builder = Gtk.Builder()
-    try:
-        cam = cv2.VideoCapture(0)  #set the port of the camera as before
-        CAM_FOUND = True
-    except:
-        CAM_FOUND = False
+    # try:
+    #     cam = cv2.VideoCapture(0)  #set the port of the camera as before
+    #     CAM_FOUND = True
+    # except:
+    #     CAM_FOUND = False
 
     if len(sys.argv) > 1 and sys.argv[1] == 'dev':
         DEV = True
