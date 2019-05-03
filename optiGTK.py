@@ -156,10 +156,15 @@ class Handler:
                 cam_image = PIL.Image.open("res/matt.png").convert('RGB')
             else:
                 cam_image = PIL.Image.open("/usr/local/bin/optinomics/res/matt.png").convert('RGB')
+        fin_dim = 0;
+        if cam_image.width > cam_image.height:
+            fin_dim = cam_image.height
+        else:
+            fin_dim = cam_image.width
+
+        cam_image = cam_image.crop((0,0,fin_dim,fin_dim))
 
 
-
-        cam_image = cam_image.crop((0,0,cam_image.width,cam_image.width))
         fin_size = int(win_w*0.5)
 
         cam_image = cam_image.resize((fin_size,fin_size), PIL.Image.ANTIALIAS)
