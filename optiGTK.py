@@ -17,7 +17,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 from gi.repository import GObject, LightDM
 
-
+CAM_FOUND = False
 info_label = None
 DEV = True
 ims = None
@@ -142,7 +142,6 @@ class Handler:
         win_w = wid.get_window().get_width()
         win_h = wid.get_window().get_height()
         STATE.inc_time()
-        cam_found = False
 
         if CAM_FOUND:
             cam = cv2.VideoCapture(0)  #set the port of the camera as before
