@@ -162,11 +162,11 @@ class Handler:
         if cam_image.width > cam_image.height:
             fin_dim = cam_image.height
             dim_cropped = cam_image.width - cam_image.height
-            cam_image = cam_image.crop((int(dim_cropped/2),0,fin_dim,fin_dim))            
+            cam_image = cam_image.crop((dim_cropped/2,0,fin_dim+dim_cropped/2,fin_dim))            
         else:
             fin_dim = cam_image.width
             dim_cropped = cam_image.width - cam_image.height
-            cam_image = cam_image.crop((0,int(dim_cropped/2),fin_dim,fin_dim))
+            cam_image = cam_image.crop((0,0,fin_dim,fin_dim))
 
         cam_image = cam_image.crop((0,0,fin_dim,fin_dim))
 
@@ -338,7 +338,6 @@ if __name__ == "__main__":
     if cam is not None and cam.isOpened():
         CAM_FOUND = True
         debug_print("CAM FOUND!")
-
 
     greeter = LightDM.Greeter()
 
