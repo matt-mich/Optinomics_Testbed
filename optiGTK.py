@@ -142,7 +142,7 @@ class Handler:
         STATE.inc_time()
         cam_found = False
 
-    	cam = cv2.VideoCapture(0)  #set the port of the camera as before
+        cam = cv2.VideoCapture(0)  #set the port of the camera as before
         if cam is not None:
             retval, cam_image = cam.read() #return a True bolean and and the image if all go right
             cam.release() #Closes video file or capturing device.
