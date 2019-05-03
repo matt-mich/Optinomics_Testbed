@@ -36,6 +36,8 @@ STATE_LABELS = ["Starting webcam feed",
 
 ANIM_QUEUE = []
 
+
+
 class Animation:
     def __init__(self):
         self.total_stages = 0
@@ -142,12 +144,12 @@ class Handler:
         STATE.inc_time()
         cam_found = False
 
-        cam = cv2.VideoCapture(0)  #set the port of the camera as before
-        if cam is not None:
+        if CAM_FOUND:
+            cam = cv2.VideoCapture(0)  #set the port of the camera as before
             retval, cam_image = cam.read() #return a True bolean and and the image if all go right
             cam.release() #Closes video file or capturing device.
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            im_pil = PIL.Image.fromarray(img).convert('RGB')
+            img = cv2.cvtColor(cam_image, cv2.COLOR_BGR2RGB)
+            cam_image = PIL.Image.fromarray(img).convert('RGB')
             cam_found = True
         else:
             if DEV:
@@ -315,7 +317,12 @@ def debug_print(msg):
 
 if __name__ == "__main__":
     builder = Gtk.Builder()
-    
+    try:
+        cam = cv2.VideoCapture(0)  #set the port of the camera as before
+        CAM_FOUND = True
+    except:
+        CAM_FOUND = False
+
     if len(sys.argv) > 1 and sys.argv[1] == 'dev':
         DEV = True
         debug_print("Started DEV Mode")
