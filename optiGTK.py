@@ -314,10 +314,12 @@ if __name__ == "__main__":
 
     if not DEV:
         greeter.connect_to_daemon_sync()
+        debug_print("Connected to daemon")            
 
     greeter.connect("show-message",show_message_func)
     greeter.connect("show-prompt",show_prompt_func)
     greeter.connect ("authentication-complete", authentication_complete_cb)
+    debug_print("Greeter functions connected")            
 
     css_P = Gtk.CssProvider()
     if DEV:
@@ -328,20 +330,20 @@ if __name__ == "__main__":
         css_P.load_from_path("/usr/local/bin/optinomics/res/style.css")
         Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),css_P,400)
         builder.add_from_file("/usr/local/bin/optinomics/gtk_glade.glade")
+    debug_print("Styles connected, glade_UI built")            
 
     builder.connect_signals(Handler())
+    debug_print("Handlers connected to UI")
 
     window = builder.get_object("main_window")
-
-    if not DEV:
-    	greeter.connect_to_daemon_sync()
-
     
     logo = builder.get_object("logo")
     
     setLogo(logo,window)
+    debug_print("Logo set")
 
     info_label = builder.get_object("info_label")
+    debug_print("Info label set")
 
     darea = builder.get_object("darea")
     login = builder.get_object("login")
@@ -349,15 +351,14 @@ if __name__ == "__main__":
     timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
     STATE = State(window)
 
-    if not DEV:
-    	greeter.connect_to_daemon_sync()
-
     screen = window.get_screen()
     screen_width = screen.get_width()
     screen_height = screen.get_height()
     debug_print("S_W: " + str(screen_width) + " S_H: " + str(screen_height))
 
     geo = Gdk.Geometry()
+    debug_print("Geometry set")
+
     geo.min_width = screen_width
     geo.min_height = screen_height
     window.set_geometry_hints(None, geo, Gdk.WindowHints.MIN_SIZE)
@@ -365,16 +366,5 @@ if __name__ == "__main__":
     window.set_default_size(screen_width,screen_height)
     window.show_all()
     window.resize(screen_width,screen_height)
-
-    # class OptiGreeter(Gtk.Window):
-    #     def __init__(self):
-    #         Gtk.Window.__init__(self, title="OptiGreeter")
-
-    #         #self.add(self.u_entry)
-    #         #self.add(self.p_entry)
-
-    # win = OptiGreeter()
-    # win.connect("destroy", Gtk.main_quit)
-    # win.show_all()
-
+    debug_print("Starting main loop")
     Gtk.main()
