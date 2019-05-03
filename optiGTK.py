@@ -24,7 +24,7 @@ ims = None
 greeter = None
 builder = None
 TIME_SCALE = 10
-
+cam = None
 STATE = None
 
 STATES = ["INIT","AUTH_INIT","AUTH_COMPLETE","LOGIN"]
@@ -122,6 +122,8 @@ def mat_mask(n):
 class Handler:
     def onDestroy(self, *args):
         print("Destroy!")
+        if CAM_FOUND and cam is not None:
+            cam.release()
         Gtk.main_quit()
 
     def keypress(self,win,event_key):
@@ -325,7 +327,6 @@ if __name__ == "__main__":
         cam = cv2.VideoCapture(0)  #set the port of the camera as before
         CAM_FOUND = True
         debug_print("CAM FOUND!")
-        cam.release()
     except:
         CAM_FOUND = False
 
