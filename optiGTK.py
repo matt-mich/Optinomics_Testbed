@@ -146,7 +146,7 @@ class Handler:
         win_h = wid.get_window().get_height()
         STATE.inc_time()
 
-        if CAM_FOUND:
+        if CAM_FOUND is True:
             retval, cam_image = cam.read()
             img = cv2.cvtColor(cam_image, cv2.COLOR_BGR2RGB)
             cam_image = PIL.Image.fromarray(img).convert('RGB')
@@ -335,7 +335,7 @@ if __name__ == "__main__":
 
     
     cam = cv2.VideoCapture(0)  #set the port of the camera as before
-    if cam is not None:
+    if cam is not None and cam.isOpened():
         CAM_FOUND = True
         debug_print("CAM FOUND!")
 
