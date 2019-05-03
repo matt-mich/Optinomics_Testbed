@@ -8,6 +8,8 @@ import numpy as np
 import math
 import cairo
 import time
+import cv2
+
 
 gi.require_version('LightDM', '1')
 gi.require_version('Gtk', '3.0')
@@ -138,11 +140,22 @@ class Handler:
         win_w = wid.get_window().get_width()
         win_h = wid.get_window().get_height()
         STATE.inc_time()
+        cam_found = False
 
-        if DEV:
-            cam_image = PIL.Image.open("res/matt.png").convert('RGB')
+    	cam = cv2.VideoCapture(0)  #set the port of the camera as before
+        if cam is not None:
+            retval, cam_image = cam.read() #return a True bolean and and the image if all go right
+            cam.release() #Closes video file or capturing device.
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            im_pil = PIL.Image.fromarray(img).convert('RGB')
+            cam_found = True
         else:
-            cam_image = PIL.Image.open("/usr/local/bin/optinomics/res/matt.png").convert('RGB')
+            if DEV:
+                cam_image = PIL.Image.open("res/matt.png").convert('RGB')
+            else:
+                cam_image = PIL.Image.open("/usr/local/bin/optinomics/res/matt.png").convert('RGB')
+
+
 
         cam_image = cam_image.crop((0,0,cam_image.width,cam_image.width))
         fin_size = int(win_w*0.5)
@@ -288,7 +301,6 @@ handlers = {
 	"show-message":show_message_func,
 	"show-prompt":show_prompt_func
 }
-
 
 DEV = False
 
