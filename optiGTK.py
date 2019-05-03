@@ -2,6 +2,7 @@
 
 import gi
 import PIL.Image
+import PIL.ImageOps
 import array
 import sys
 import numpy as np
@@ -24,7 +25,7 @@ ims = None
 greeter = None
 builder = None
 TIME_SCALE = 10
-cam = None
+#cam = None
 STATE = None
 
 STATES = ["INIT","AUTH_INIT","AUTH_COMPLETE","LOGIN"]
@@ -149,14 +150,14 @@ class Handler:
             retval, cam_image = cam.read()
             img = cv2.cvtColor(cam_image, cv2.COLOR_BGR2RGB)
             cam_image = PIL.Image.fromarray(img).convert('RGB')
-            cam_image =  PIL.ImageOps.mirror(cam_image)
+            cam_image = PIL.ImageOps.mirror(cam_image)
         else:
             if DEV:
                 cam_image = PIL.Image.open("res/matt.png").convert('RGB')
             else:
                 cam_image = PIL.Image.open("/usr/local/bin/optinomics/res/matt.png").convert('RGB')
-        fin_dim = 0;
-        dim_cropped = 0;
+        fin_dim = 0
+        dim_cropped = 0
 
         if cam_image.width > cam_image.height:
             fin_dim = cam_image.height
@@ -168,7 +169,6 @@ class Handler:
             cam_image = cam_image.crop((0,int(dim_cropped/2),fin_dim,fin_dim))
 
         cam_image = cam_image.crop((0,0,fin_dim,fin_dim))
-
 
         fin_size = int(win_w*0.3)
 
@@ -333,12 +333,11 @@ if __name__ == "__main__":
     else:
         debug_print("Started in GREETER mode")            
 
-    try:
-        cam = cv2.VideoCapture(0)  #set the port of the camera as before
+    
+    cam = cv2.VideoCapture(0)  #set the port of the camera as before
+    if cam is not None:
         CAM_FOUND = True
         debug_print("CAM FOUND!")
-    except:
-        CAM_FOUND = False
 
 
     greeter = LightDM.Greeter()
