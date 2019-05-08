@@ -10,7 +10,7 @@ import math
 import cairo
 import time
 import cv2
-
+import pytweening
 
 gi.require_version('LightDM', '1')
 gi.require_version('Gtk', '3.0')
@@ -24,44 +24,97 @@ DEV = True
 ims = None
 greeter = None
 builder = None
-TIME_SCALE = 10
-#cam = None
+
+DEF_TS = 5
+TIME_SCALE = DEF_TS
+
 STATE = None
 
-STATES = ["INIT","AUTH_INIT","AUTH_COMPLETE","LOGIN"]
+STATES = ["INIT",
+          "AUTH_D1",
+          "AUTH_D2",
+          "LOGIN"]
 
-STATE_LABELS = ["Starting webcam feed",
-                "Authenticating user...",
+STATE_LABELS = ["Authenticating user...",
+                "User found in network!",
                 "User found in network!",
                 "Please Login"]
 
 ANIM_QUEUE = []
 
+search_anim = None
+auth_done_anim = None
+auth_done_swipe_anim = None
 
 
 class Animation:
-    def __init__(self):
-        self.total_stages = 0
-        self.equation = None
-    # def isFinished(self):
-    # def isStarted(self):
-    # def isFinished(self):
-    # def isFinished(self):
+    def __init__(self, time_per_step, loop, eq):
+        self.completion = 0
+        self.tween = 0
+        self.time_per_step = time_per_step
+        self.equation = eq
+        self.complete = False
+        self.looping = loop
+        self.last_time = time.time()
+        self.curr_time = time.time()
+        self.delta_time = 0
+        self.paused = False
 
-def show_message_func(greeter,text,type):
+    def step(self):
+        if self.complete is False:
+            self.curr_time = time.time()
+            self.delta_time = self.curr_time - self.last_time
+            self.last_time = time.time()
+            if self.paused is False:
+                next_comp = self.completion + (self.delta_time*self.time_per_step)
+                if next_comp >= 1:
+                    next_comp = 1
+                self.tween = self.equation(next_comp)
+                self.completion = next_comp
+                if self.completion >= 1:
+                    if not self.looping:
+                        self.finish()
+                    else:
+                        self.completion = 0
+        return self.tween
+
+    def pause(self):
+        self.paused = True
+
+    def resume(self):
+        self.paused = False
+
+    def finish(self):
+        self.completion = 1.0
+        self.complete = True
+
+    def restart(self):
+        self.complete = False
+        self.completion = 0
+
+    def is_finished(self):
+        return self.complete
+
+
+def show_message_func(greeter, text, type):
     setInfoLabel(info_label,text)
 
-def show_prompt_func(greeter,text,type):
+
+def show_prompt_func(greeter, text, type):
     setInfoLabel(info_label,text)
-    
+
+
 def authentication_complete_cb(greeter):
     if greeter.get_is_authenticated():
         if not greeter.start_session_sync("xfce"):
             setInfoLabel(info_label,"Failed to start xfce")
     else:
         setInfoLabel(info_label,"Auth failed")
+
+
 class State:
     def __init__(self,window):
+        self.state = 0
         self.set_state(STATES[0])
         self.state_int = 0
         self.tick = 0
@@ -69,16 +122,17 @@ class State:
         self.prev_time = time.time()
         self.update_dims(window)
 
-    def update_dims(self,window):
+    def update_dims(self, window):
         self.w = window.get_screen().get_width()
         self.h = window.get_screen().get_height()
 
     def get_state(self):
-        return self.STATE
+        return self.state
 
-    def set_state(self,state):
-        self.STATE = state
-        setInfoLabel(info_label,STATE_LABELS[STATES.index(state)])
+    def set_state(self, state):
+        self.reset_time()
+        self.state = state
+        setInfoLabel(info_label, STATE_LABELS[STATES.index(state)])
         self.tick = 0
         self.init_time = time.time()
         self.prev_time = time.time()
@@ -87,13 +141,21 @@ class State:
         return self.tick
 
     def inc_time(self):
-        self.tick+=(time.time()-self.prev_time)
+        self.tick += time.time()-self.prev_time
         self.prev_time = time.time()
+
+    def reset_time(self):
+        self.tick = 0
+        self.init_time = time.time()
+        self.prev_time = time.time()
+
     def inc_state(self):
+        self.reset_time()
         self.state_int += 1
         if self.state_int >= len(STATES):
             self.state_int = 0
         self.set_state(STATES[self.state_int])
+
 
 def pil2cairo(im):
     if im.mode != 'RGBA':
@@ -108,11 +170,13 @@ def pil2cairo(im):
         a, cairo.FORMAT_ARGB32, im.size[0], im.size[1])
     ctx.set_source_surface(non_premult_src_wo_alpha)
     ctx.mask_surface(non_premult_src_alpha)
+
     return dest
+
 
 def mat_mask(n):
     cent = int(n/2)
-    y,x = np.ogrid[-cent:n-cent, -cent:n-cent]
+    y, x = np.ogrid[-cent:n-cent, -cent:n-cent]
 
     mask = x**2 + y**2 <= cent*cent
 
@@ -120,7 +184,9 @@ def mat_mask(n):
     array[mask] = 255
     return array
 
+
 class Handler:
+
     def onDestroy(self, *args):
         print("Destroy!")
         if CAM_FOUND and cam is not None:
@@ -128,9 +194,8 @@ class Handler:
         Gtk.main_quit()
 
     def keypress(self,win,event_key):
-        print("keypress")
-        print(event_key.keyval)
-        if event_key.keyval == 65289:
+        # print(event_key.keyval)
+        if event_key.keyval == 65506:
             STATE.inc_state()
 
     def onButtonPressed(self, button):
@@ -141,10 +206,16 @@ class Handler:
         else:
             greeter.authenticate('matt')
 
-    def on_draw(self,wid, cr):
+    def on_draw(self, wid, cr):
+        global search_anim
+        global auth_done_anim
+        global auth_done_swipe_anim
+        global TIME_SCALE
+
+        line_width = 16
+
         win_w = wid.get_window().get_width()
         win_h = wid.get_window().get_height()
-        STATE.inc_time()
 
         if CAM_FOUND is True:
             retval, cam_image = cam.read()
@@ -156,8 +227,6 @@ class Handler:
                 cam_image = PIL.Image.open("res/matt.png").convert('RGB')
             else:
                 cam_image = PIL.Image.open("/usr/local/bin/optinomics/res/matt.png").convert('RGB')
-        fin_dim = 0
-        dim_cropped = 0
 
         if cam_image.width > cam_image.height:
             fin_dim = cam_image.height
@@ -174,86 +243,136 @@ class Handler:
 
         cam_image = cam_image.resize((fin_size,fin_size), PIL.Image.ANTIALIAS)
 
-        # Make into Numpy array of RGB and get dimensions
         RGB = np.array(cam_image)
         h, w = RGB.shape[:2]
-
-        # Add an alpha channel, fully opaque (255)
         RGBA = np.dstack((RGB, mat_mask(w))).astype('uint8')
-        # Make mask of black pixels - mask is True where image is black
         mBlack = (RGBA[:, :, 0:3] == [0,0,0]).all(2)
-        # Make all pixels matched by mask into transparent ones
         RGBA[mBlack] = (0,0,0,0)
         cam_image = PIL.Image.fromarray(RGBA)
-        #cam_image = Image.fromarray(cam_image)
-     
-        #cam_image = get_masked_img(cam_image,0)
+
         arr = array.array('B',cam_image.tobytes())
         i_w, i_h = cam_image.size
         ims = pil2cairo(cam_image)
-        time_update= None
+
         if STATE.get_state() == "INIT":
+            TIME_SCALE = DEF_TS
+
+            if login.get_visible() is True:
+                login.set_visible(False)
+                darea.set_visible(True)
+
+            if search_anim is None:
+                search_anim = Animation(0.5, True, pytweening.easeInOutSine)
+
             cr.set_line_width(1)
-            #print(w," ",h)
+
             cr_x, cr_y = int(win_w/2), int(win_h/2)
             cr.translate(cr_x,cr_y)
             offset = math.pi*1.5
-            cr.set_source_rgb(1.0, 1.0, 1.0)
-            cr.arc(0, 0, cam_image.size[0]/2, 0, math.pi*2)
+
+            img_mid = cam_image.size[0]/2
+
             cr.set_source_rgb(0.0, 0.0, 0.0)
-            cr.fill()
-
-            cr.set_line_width(15)
-            cr.set_source_rgb(1.0, 1.0, 1.0)
-
-            img_mid = cam_image.size[0]/2
-
-            time_update = STATE.get_time()*6
-            if time_update < 2*math.pi:
-                cr.arc(0, 0, img_mid, offset, time_update+offset)
-            elif time_update < 4*math.pi:
-                cr.arc(0, 0, img_mid, time_update-2*math.pi+offset, 2*math.pi+offset)
-            else:
-                STATE.set_state(STATE.get_state())
-            cr.stroke_preserve()
-
-
-        elif STATE.get_state() == "AUTH_INIT":
-            cr.set_line_width(15)
-            #print(w," ",h)
-            cr_x, cr_y = int(win_w/2), int(win_h/2)
-            cr.translate(cr_x,cr_y)
-            img_mid = cam_image.size[0]/2
-            time_update = STATE.get_time()*2
-            offset = math.pi*1.5
-
             cr.set_source_surface(ims, -img_mid, -img_mid)
             cr.paint()
+
+            cr.fill()
+            cr.set_line_width(line_width)
             cr.set_source_rgb(1.0, 1.0, 1.0)
 
-            cr.arc(0, 0, img_mid, offset, time_update+offset)
-            cr.stroke_preserve()
-            
-#            cr.set_source_rgb(0.3, 0.4, 0.6)
-#            cr.fill()
-        elif STATE.get_state() == "AUTH_COMPLETE":
+            anim_step = search_anim.step()*4*math.pi
+            if anim_step < 2*math.pi:
+                cr.arc(0, 0, img_mid-line_width/2, offset, anim_step+offset)
+            elif anim_step < 4*math.pi:
+                cr.arc(0, 0, img_mid-line_width/2, anim_step-2*math.pi+offset, 2*math.pi+offset)
+            else:
+                search_anim.pause()
+                STATE.inc_time()
+                if STATE.get_time() > 2.5:
+                    search_anim = None
+                    STATE.set_state(STATE.get_state())
 
-            cr.set_line_width(30)
-            #print(w," ",h)
+            cr.stroke_preserve()
+
+        elif STATE.get_state() == "AUTH_D1":
+            TIME_SCALE = DEF_TS
+
+            if login.get_visible() is True:
+                login.set_visible(False)
+                darea.set_visible(True)
+
+            search_anim = None
+            if auth_done_anim is None:
+                auth_done_anim = Animation(1, False, pytweening.easeInOutElastic)
+            if auth_done_anim.is_finished():
+                anim_step = 1
+            else:
+                anim_step = auth_done_anim.step()
+
+            cr.set_line_width(line_width+line_width*anim_step)
+
             cr_x, cr_y = int(win_w/2), int(win_h/2)
-            cr.translate(cr_x,cr_y)
-            time_wait = 0.5
-            time_update = (STATE.get_time()-time_wait)*win_w
-            if(time_update < 0):
-                time_update = 0
+            cr.translate(cr_x, cr_y)
+
             img_mid = cam_image.size[0]/2
-            cr.set_source_surface(ims,-img_mid+time_update,-cam_image.size[1]/2)
-            cr.paint()            
+            cr.set_source_surface(ims, -img_mid, -cam_image.size[1]/2)
+            cr.paint()
+
+            r = 1 - (1-0.3)*anim_step
+            b = 1
+            g = 1 - (1-0.3)*anim_step
+
+            cr.set_source_rgb(r, b, g)
+
+            cr.arc(0, 0, img_mid-line_width/2, 0, 7)
+            cr.stroke_preserve()
+
+            if auth_done_anim.is_finished():
+                STATE.inc_time()
+                if STATE.get_time() > 1:
+                    STATE.inc_state()
+
+        elif STATE.get_state() == "AUTH_D2":
+            TIME_SCALE = DEF_TS
+
+            if login.get_visible() is True:
+                login.set_visible(False)
+                darea.set_visible(True)
+
+            auth_done_anim = None
+            if auth_done_swipe_anim is None:
+                auth_done_swipe_anim = Animation(0.8, False, pytweening.easeInQuad)
+            if auth_done_swipe_anim.is_finished():
+                anim_step = 1
+            else:
+                anim_step = auth_done_swipe_anim.step() * 3500
+
+            cr.set_line_width(line_width*2)
+
+            cr_x, cr_y = int(win_w/2), int(win_h/2)
+            cr.translate(cr_x, cr_y)
+
+            img_mid = cam_image.size[0]/2
+            cr.set_source_surface(ims, -img_mid+anim_step,-cam_image.size[1]/2)
+            cr.paint()
             cr.set_source_rgb(0.3, 1.0, 0.3)
 
-            cr.arc(time_update, 0, img_mid, 0, 7)
+            cr.arc(anim_step, 0, img_mid-line_width/2, 0, 7)
             cr.stroke_preserve()
-        else:
+
+            if auth_done_swipe_anim.is_finished():
+                STATE.inc_time()
+                if STATE.get_time() > 0.5:
+                    STATE.inc_state()
+
+        # cr.set_source_rgb(0.3, 0.4, 0.6)
+          # cr.fill()
+        elif STATE.get_state() == "LOGIN":
+            auth_done_anim = None
+            auth_done_swipe_anim = None
+
+            TIME_SCALE = DEF_TS*100
+            darea.set_visible(False)
             login.set_visible(True)
 
 
@@ -262,59 +381,62 @@ def image2pixbuf(im):
     width, height = im.size
     return GdkPixbuf.Pixbuf.new_from_data(arr, GdkPixbuf.Colorspace.RGB,True, 8, width, height, width * 4)
 
-def setLogo(logo_obj,window):
+
+def setLogo(logo_obj, window):
     if DEV:
         logo_img = PIL.Image.open('res/Opti.png')
     else:
         logo_img = PIL.Image.open('/usr/local/bin/optinomics/res/Opti.png')
 
-    w,h = logo_img.width, logo_img.height
+    w, h = logo_img.width, logo_img.height
 
     win_w = window.get_screen().get_width()
-    win_h= window.get_screen().get_height()
+    win_h = window.get_screen().get_height()
     
     print(window.get_size())
     scale = win_w/w
-    scale *= 0.2
+    scale *= 0.3
     logo_img = logo_img.resize((int(w*scale),int(h*scale)),PIL.Image.ANTIALIAS)
-    #logo_arr = np.array(logo_img.tostring())
-    #GdkPixbuf.Pixbuf.new_from_data(logo_arr, GdkPixbuf.Colorspace.RGB, True, 8, logo_arr.shape[1], logo_arr.shape[0], logo_arr.shape[1] * 4)
     pix = image2pixbuf(logo_img)
     logo_obj.set_from_pixbuf(pix)
 
+
 class Render:
-    def __init__(self,window):
+    def __init__(self, window):
         self.window = window
+
     def render(self):
         self.window.queue_draw()
         self.timeout_id = GLib.timeout_add(100, self.render, None)      
+
 
 def win_draw(self):
     darea.queue_draw()
     timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
 
-def get_masked_img(src,arc):
-	mask = PIL.Image.new('L', (src.width,src.height), 0)
-	draw = PIL.ImageDraw.Draw(mask)
-	draw.pieslice((0, 0) + mask.size,0,arc, fill=255)
-	src = PIL.ImageOps.fit(src, mask.size, centering=(0.5, 0.5))
-	src.putalpha(mask)
-	return src
+
+def get_masked_img(src, arc, draw):
+    mask = PIL.Image.new('L', (src.width,src.height), 0)
+    draw.pieslice((0, 0) + mask.size,0,arc, fill=255)
+    src = PIL.ImageOps.fit(src, mask.size, centering=(0.5, 0.5))
+    src.putalpha(mask)
+    return src
+
 
 def setInfoLabel(label,text):
     markup = "<span font_desc='Source Code Pro Bold "
     size = 20
     markup = markup + str(size) +"'>" + text + "</span>"
-    #info_label.set_markup("<span font_desc='Sans 5.4'>%s</span>" % text)
     label.set_markup(markup)
 
 
 handlers = {
-	"show-message":show_message_func,
-	"show-prompt":show_prompt_func
+    "show-message": show_message_func,
+    "show-prompt": show_prompt_func
 }
 
 DEV = False
+
 
 def debug_print(msg):
     if DEV:
@@ -325,6 +447,7 @@ def debug_print(msg):
     f.write(msg+"\n")
     f.close()
 
+
 if __name__ == "__main__":
     builder = Gtk.Builder()
     if len(sys.argv) > 1 and sys.argv[1] == 'dev':
@@ -333,8 +456,7 @@ if __name__ == "__main__":
     else:
         debug_print("Started in GREETER mode")            
 
-    
-    cam = cv2.VideoCapture(0)  #set the port of the camera as before
+    cam = cv2.VideoCapture(0)
     if cam is not None and cam.isOpened():
         CAM_FOUND = True
         debug_print("CAM FOUND!")

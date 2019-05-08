@@ -1,22 +1,60 @@
-.main_grid{
+.window{
     background-color: darkseagreen;
 }
 
 .button{
-    background-color:darkgreen;
+    background-color:gainsboro;
+    font-family: "Source Sans Pro",sans-serif;
+    font-weight: bolder;
+    color: black;
+    border-radius: 0;
+    border:0;
 }
 
 .login{
     font-family: 'Arial', Courier, monospace;
-    font-weight: bold;
+    font-weight: lighter;
+    background-color: whitesmoke;
+    padding: 10px;
+    box-shadow: 0 0 5px black;
 }
 
-.user_input_box{
+.main_grid{
+    background-color: darkseagreen;}
+
+.uplabel{
+    font-size:100%;
+    font-family: Courier, monospace;
+}
+
+.settings{
+    background-color: whitesmoke;
+    border: 0;
+}
+.input_box{
     color: darkslategrey;
     background-color: whitesmoke;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-left-width: 0;
+    border-bottom-width: 2px;
+    border-radius: 0;
+    border-color: black;
+
 }
 
 .pass_input_box{
     color: darkslategrey;
     background-color: whitesmoke;
+}
+
+.info_label{
+    font-family: "Source Sans Pro",sans-serif;
+    font-weight: bolder;
+    font-size: 1.5em;
+    color: white;
+}
+
+.bg_frame{
+    background-color: red;
 }
