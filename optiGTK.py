@@ -18,9 +18,11 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 from gi.repository import GObject, LightDM
 
+from OptiFunctions import *
+
+
 CAM_FOUND = False
 info_label = None
-DEV = True
 ims = None
 greeter = None
 builder = None
@@ -30,16 +32,6 @@ TIME_SCALE = DEF_TS
 
 STATE = None
 
-STATES = ["INIT",
-          "AUTH_D1",
-          "AUTH_D2",
-          "LOGIN"]
-
-STATE_LABELS = ["Authenticating user...",
-                "User found in network!",
-                "User found in network!",
-                "Please Login"]
-
 ANIM_QUEUE = []
 
 search_anim = None
@@ -47,142 +39,28 @@ auth_done_anim = None
 auth_done_swipe_anim = None
 
 
-class Animation:
-    def __init__(self, time_per_step, loop, eq):
-        self.completion = 0
-        self.tween = 0
-        self.time_per_step = time_per_step
-        self.equation = eq
-        self.complete = False
-        self.looping = loop
-        self.last_time = time.time()
-        self.curr_time = time.time()
-        self.delta_time = 0
-        self.paused = False
 
-    def step(self):
-        if self.complete is False:
-            self.curr_time = time.time()
-            self.delta_time = self.curr_time - self.last_time
-            self.last_time = time.time()
-            if self.paused is False:
-                next_comp = self.completion + (self.delta_time*self.time_per_step)
-                if next_comp >= 1:
-                    next_comp = 1
-                self.tween = self.equation(next_comp)
-                self.completion = next_comp
-                if self.completion >= 1:
-                    if not self.looping:
-                        self.finish()
-                    else:
-                        self.completion = 0
-        return self.tween
-
-    def pause(self):
-        self.paused = True
-
-    def resume(self):
-        self.paused = False
-
-    def finish(self):
-        self.completion = 1.0
-        self.complete = True
-
-    def restart(self):
-        self.complete = False
-        self.completion = 0
-
-    def is_finished(self):
-        return self.complete
-
+def set_resource_path():
+    global RES_PATH
+    if DEV:
+        RES_PATH = "./res/"
+    else:
+        RES_PATH = "/usr/local/bin/optinomics/res/"
 
 def show_message_func(greeter, text, type):
-    setInfoLabel(info_label,text)
+    set_info_label(info_label, text)
 
 
 def show_prompt_func(greeter, text, type):
-    setInfoLabel(info_label,text)
+    set_info_label(info_label, text)
 
 
 def authentication_complete_cb(greeter):
     if greeter.get_is_authenticated():
         if not greeter.start_session_sync("xfce"):
-            setInfoLabel(info_label,"Failed to start xfce")
+            set_info_label(info_label, "Failed to start xfce")
     else:
-        setInfoLabel(info_label,"Auth failed")
-
-
-class State:
-    def __init__(self,window):
-        self.state = 0
-        self.set_state(STATES[0])
-        self.state_int = 0
-        self.tick = 0
-        self.init_time = time.time()
-        self.prev_time = time.time()
-        self.update_dims(window)
-
-    def update_dims(self, window):
-        self.w = window.get_screen().get_width()
-        self.h = window.get_screen().get_height()
-
-    def get_state(self):
-        return self.state
-
-    def set_state(self, state):
-        self.reset_time()
-        self.state = state
-        setInfoLabel(info_label, STATE_LABELS[STATES.index(state)])
-        self.tick = 0
-        self.init_time = time.time()
-        self.prev_time = time.time()
-
-    def get_time(self):
-        return self.tick
-
-    def inc_time(self):
-        self.tick += time.time()-self.prev_time
-        self.prev_time = time.time()
-
-    def reset_time(self):
-        self.tick = 0
-        self.init_time = time.time()
-        self.prev_time = time.time()
-
-    def inc_state(self):
-        self.reset_time()
-        self.state_int += 1
-        if self.state_int >= len(STATES):
-            self.state_int = 0
-        self.set_state(STATES[self.state_int])
-
-
-def pil2cairo(im):
-    if im.mode != 'RGBA':
-        im = im.convert('RGBA')
-    s = im.tobytes('raw', 'BGRA')
-    a = array.array('B', s)
-    dest = cairo.ImageSurface(cairo.FORMAT_ARGB32, im.size[0], im.size[1])
-    ctx = cairo.Context(dest)
-    non_premult_src_wo_alpha = cairo.ImageSurface.create_for_data(
-        a, cairo.FORMAT_RGB24, im.size[0], im.size[1])
-    non_premult_src_alpha = cairo.ImageSurface.create_for_data(
-        a, cairo.FORMAT_ARGB32, im.size[0], im.size[1])
-    ctx.set_source_surface(non_premult_src_wo_alpha)
-    ctx.mask_surface(non_premult_src_alpha)
-
-    return dest
-
-
-def mat_mask(n):
-    cent = int(n/2)
-    y, x = np.ogrid[-cent:n-cent, -cent:n-cent]
-
-    mask = x**2 + y**2 <= cent*cent
-
-    array = np.zeros((n, n))
-    array[mask] = 255
-    return array
+        set_info_label(info_label, "Auth failed")
 
 
 class Handler:
@@ -223,10 +101,7 @@ class Handler:
             cam_image = PIL.Image.fromarray(img).convert('RGB')
             cam_image = PIL.ImageOps.mirror(cam_image)
         else:
-            if DEV:
-                cam_image = PIL.Image.open("res/matt.png").convert('RGB')
-            else:
-                cam_image = PIL.Image.open("/usr/local/bin/optinomics/res/matt.png").convert('RGB')
+            cam_image = PIL.Image.open(RES_PATH+"matt.png").convert('RGB')
 
         if cam_image.width > cam_image.height:
             fin_dim = cam_image.height
@@ -318,9 +193,9 @@ class Handler:
             cr.set_source_surface(ims, -img_mid, -cam_image.size[1]/2)
             cr.paint()
 
-            r = 1 - (1-0.3)*anim_step
+            r = 1 - (1-0.2)*anim_step
             b = 1
-            g = 1 - (1-0.3)*anim_step
+            g = 1 - (1-0.2)*anim_step
 
             cr.set_source_rgb(r, b, g)
 
@@ -329,7 +204,7 @@ class Handler:
 
             if auth_done_anim.is_finished():
                 STATE.inc_time()
-                if STATE.get_time() > 1:
+                if STATE.get_time() > 1.1:
                     STATE.inc_state()
 
         elif STATE.get_state() == "AUTH_D2":
@@ -376,13 +251,7 @@ class Handler:
             login.set_visible(True)
 
 
-def image2pixbuf(im):
-    arr = array.array('B', im.tobytes())
-    width, height = im.size
-    return GdkPixbuf.Pixbuf.new_from_data(arr, GdkPixbuf.Colorspace.RGB,True, 8, width, height, width * 4)
-
-
-def setLogo(logo_obj, window):
+def set_logo(logo_obj, window):
     if DEV:
         logo_img = PIL.Image.open('res/Opti.png')
     else:
@@ -423,12 +292,6 @@ def get_masked_img(src, arc, draw):
     return src
 
 
-def setInfoLabel(label,text):
-    markup = "<span font_desc='Source Code Pro Bold "
-    size = 20
-    markup = markup + str(size) +"'>" + text + "</span>"
-    label.set_markup(markup)
-
 
 handlers = {
     "show-message": show_message_func,
@@ -450,11 +313,15 @@ def debug_print(msg):
 
 if __name__ == "__main__":
     builder = Gtk.Builder()
+    global cam
+
     if len(sys.argv) > 1 and sys.argv[1] == 'dev':
         DEV = True
         debug_print("Started DEV Mode")
     else:
         debug_print("Started in GREETER mode")            
+
+    set_resource_path()
 
     cam = cv2.VideoCapture(0)
     if cam is not None and cam.isOpened():
@@ -465,7 +332,7 @@ if __name__ == "__main__":
 
     if not DEV:
         greeter.connect_to_daemon_sync()
-        debug_print("Connected to daemon")            
+        debug_print("Connected to daemon")
 
     greeter.connect("show-message",show_message_func)
     greeter.connect("show-prompt",show_prompt_func)
@@ -473,15 +340,11 @@ if __name__ == "__main__":
     debug_print("Greeter functions connected")            
 
     css_P = Gtk.CssProvider()
-    if DEV:
-        css_P.load_from_path("./res/style.css")
-        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),css_P,400)
-        builder.add_from_file("gtk_glade.glade")
-    else:
-        css_P.load_from_path("/usr/local/bin/optinomics/res/style.css")
-        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),css_P,400)
-        builder.add_from_file("/usr/local/bin/optinomics/gtk_glade.glade")
-    debug_print("Styles connected, glade_UI built")            
+    css_P.load_from_path(RES_PATH+"style.css")
+    Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), css_P, 400)
+    builder.add_from_file(RES_PATH+"OptiGreeter_UI.glade")
+
+    debug_print("Styles connected, glade_UI built")
 
     builder.connect_signals(Handler())
     debug_print("Handlers connected to UI")
@@ -490,7 +353,7 @@ if __name__ == "__main__":
     
     logo = builder.get_object("logo")
     
-    setLogo(logo,window)
+    set_logo(logo, window)
     debug_print("Logo set")
 
     info_label = builder.get_object("info_label")
@@ -500,7 +363,7 @@ if __name__ == "__main__":
     login = builder.get_object("login")
 
     timeout_id = GLib.timeout_add(TIME_SCALE, win_draw, None)
-    STATE = State(window)
+    STATE = State(window,info_label)
 
     screen = window.get_screen()
     screen_width = screen.get_width()

@@ -20,7 +20,7 @@
 }
 
 .main_grid{
-    background-color: darkseagreen;}
+    background-color: #81af81;}
 
 .uplabel{
     font-size:100%;
@@ -53,6 +53,7 @@
     font-weight: bolder;
     font-size: 1.5em;
     color: white;
+    text-shadow: black 0 2px 1px;
 }
 
 .bg_frame{
